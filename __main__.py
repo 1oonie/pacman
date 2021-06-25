@@ -79,7 +79,7 @@ def start(app):
 
 @app.on("keydown")
 def keydown(app, event):
-    ...
-
+    if event.key == pygame.K_ESCAPE:
+        app.exit(0)
 
 app.run()
