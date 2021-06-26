@@ -46,9 +46,7 @@ class PacManApp(Application):
         board: TB
 
 
-app = PacManApp(
-    caption="PacMan", width=576, height=576, icon=sprites.pacman_open_right
-)
+app = PacManApp(caption="PacMan", width=576, height=576, icon=sprites.pacman_open_right)
 board = """\
 ------------------------
 -**********************-
@@ -102,13 +100,13 @@ def render_board(board: TB) -> None:
 
 def check_board(direction: Direction, pos: Tuple[int, int], board: TB) -> bool:
     if direction == Direction.RIGHT:
-        return (board[pos[1] // 24][pos[0] // 24 + 1] != Tile.WALL)
+        return board[pos[1] // 24][pos[0] // 24 + 1] != Tile.WALL
     elif direction == Direction.LEFT:
-        return (board[pos[1] // 24][pos[0] // 24 - 1] != Tile.WALL)
+        return board[pos[1] // 24][pos[0] // 24 - 1] != Tile.WALL
     elif direction == Direction.DOWN:
-        return (board[pos[1] // 24 + 1][pos[0] // 24] != Tile.WALL)
+        return board[pos[1] // 24 + 1][pos[0] // 24] != Tile.WALL
     elif direction == Direction.UP:
-        return (board[pos[1] // 24 - 1][pos[0] // 24] != Tile.WALL)
+        return board[pos[1] // 24 - 1][pos[0] // 24] != Tile.WALL
     elif direction == Direction.NONE:
         return True
 
@@ -138,10 +136,7 @@ def update(app: PacManApp) -> None:
     render_board(app.board)
 
     pacman: PacManSprite = app.get_sprite("pacman")
-    if (
-        pacman.x % 24 == 0
-        and pacman.y % 24 == 0
-    ):
+    if pacman.x % 24 == 0 and pacman.y % 24 == 0:
         direction = pacman.next_direction
         if not check_board(pacman.next_direction, pacman.position, app.board):
             direction = pacman.current_direction

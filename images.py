@@ -109,8 +109,7 @@ class Tiles:
     def _wall(self) -> Image.Image:
         im = Image.new("RGBA", (50, 50))
         draw = ImageDraw.Draw(im)
-        draw.rectangle([2, 2, 48, 48], outline=(
-            18, 50, 239), width=5, fill=(0, 0, 0))
+        draw.rectangle([2, 2, 48, 48], outline=(18, 50, 239), width=5, fill=(0, 0, 0))
         return im
 
     @converted

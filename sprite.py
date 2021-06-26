@@ -30,7 +30,9 @@ with contextlib.redirect_stdout(None):
 
 
 class Sprite:
-    def __init__(self, display: pygame.Surface, image: pygame.Surface, pos: Tuple[int, int]):
+    def __init__(
+        self, display: pygame.Surface, image: pygame.Surface, pos: Tuple[int, int]
+    ):
         self.display: pygame.Surface = display
         display.blit(image, pos)
         self.image: pygame.Surface = image
