@@ -75,8 +75,8 @@ def parse_board(board):
     return res
 
 
-def render_board(app):
-    for n_line, line in enumerate(app.board):
+def render_board(board):
+    for n_line, line in enumerate(board):
         for n_item, item in enumerate(line):
             if item == Tile.WALL:
                 img = tiles.wall
@@ -87,20 +87,81 @@ def render_board(app):
             app.display.blit(img, (n_item * 25, n_line * 25))
 
 
+def check_board(direction, pos, board):
+    if direction == Direction.RIGHT:
+        return (board[pos[1] // 25][pos[0] // 25 + 1] != Tile.WALL)
+    elif direction == Direction.LEFT:
+        return (board[pos[1] // 25][pos[0] // 25 - 1] != Tile.WALL)
+    elif direction == Direction.DOWN:
+        return (board[pos[1] // 25 + 1][pos[0] // 25] != Tile.WALL)
+    elif direction == Direction.UP:
+        return (board[pos[1] // 25 - 1][pos[0] // 25] != Tile.WALL)
+    elif direction == Direction.NONE:
+        return True
+
+
 @app.on("start")
 def start(app):
     app.board = parse_board(board)
 
     app.display.fill((0, 0, 0))
-    render_board(app)
+    render_board(app.board)
     pacman = Sprite(app.display, sprites.pacman_open_right, (25, 25))
-    pacman.direction = Direction.RIGHT
+    pacman.next_direction = Direction.RIGHT
+    pacman.current_direction = Direction.RIGHT
     app.add_sprite(pacman, "pacman")
 
 
 @app.on("update")
 def update(app):
-    ...
+    app.display.fill((0, 0, 0))
+    render_board(app.board)
+
+    pacman = app.get_sprite("pacman")
+
+    if (
+        pacman.x % 25 == 0
+        and pacman.y % 25 == 0
+    ):
+        direction = pacman.next_direction
+        print(check_board(pacman.current_direction, pacman.position, app.board))
+        if not check_board(pacman.next_direction, pacman.position, app.board):
+            direction = pacman.current_direction
+        if not check_board(pacman.current_direction, pacman.position, app.board):
+            direction = Direction.NONE
+        pacman.current_direction = direction
+    else:
+        direction = pacman.current_direction
+
+    x, y = pacman.x, pacman.y
+    img = pacman.image
+
+    if direction == Direction.RIGHT:
+        x += 1
+        if x % 25 < 12.5:
+            img = sprites.pacman_open_right
+        else:
+            img = sprites.pacman_closed
+    elif direction == Direction.LEFT:
+        x -= 1
+        if x % 25 < 12.5:
+            img = sprites.pacman_open_left
+        else:
+            img = sprites.pacman_closed
+    elif direction == Direction.UP:
+        y -= 1
+        if y % 25 < 12.5:
+            img = sprites.pacman_open_top
+        else:
+            img = sprites.pacman_closed
+    elif direction == Direction.DOWN:
+        y += 1
+        if y % 25 < 12.5:
+            img = sprites.pacman_open_bottom
+        else:
+            img = sprites.pacman_closed
+
+    pacman.update(img, (x, y))
 
 
 @app.on("keydown")
@@ -114,12 +175,12 @@ def keydown(app, event):
         pygame.K_DOWN: Direction.DOWN,
         pygame.K_LEFT: Direction.LEFT,
         pygame.K_UP: Direction.UP,
-        pygame.K_RIGHT: Direction.RIGHT
+        pygame.K_RIGHT: Direction.RIGHT,
     }
     # pylint: enable
     direction = directions.get(event.key, None)
     if direction:
-        pacman.direction = direction
+        pacman.next_direction = direction
 
 
 app.run()

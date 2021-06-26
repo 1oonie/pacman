@@ -98,6 +98,7 @@ class Application:
 
     def run(self, *, fps=60):
         self.send("start")
+        pygame.display.update()
 
         while not self.stopped:
             for event in pygame.event.get():

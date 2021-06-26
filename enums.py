@@ -36,8 +36,9 @@ class Tile(Enum):
     WALL = 2
 
 
-class Direction(enum.Enum):
+class Direction(Enum):
     RIGHT = 0
     LEFT = 1
-    TOP = 3
-    BOTTOM = 4
+    UP = 3
+    DOWN = 4
+    NONE = 5
