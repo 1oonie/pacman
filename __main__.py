@@ -118,6 +118,16 @@ def eat_coin(pos: Tuple[int, int], board: TB) -> TB:
     return board
 
 
+def isinverse(directions: Tuple[Direction, Direction]):
+    inverse_dict = {
+        Direction.RIGHT: Direction.LEFT,
+        Direction.LEFT: Direction.RIGHT,
+        Direction.UP: Direction.DOWN,
+        Direction.DOWN: Direction.UP,
+    }
+    return inverse_dict[directions[0]] == directions[1]
+
+
 @app.on("start")
 def start(app: PacManApp) -> None:
     app.board = parse_board(board)
@@ -136,14 +146,17 @@ def update(app: PacManApp) -> None:
     render_board(app.board)
 
     pacman: PacManSprite = app.get_sprite("pacman")
-    if pacman.x % 24 == 0 and pacman.y % 24 == 0:
+    if (pacman.x % 24 == 0 and pacman.y % 24 == 0) or isinverse(
+        (pacman.current_direction, pacman.next_direction)
+    ):
         direction = pacman.next_direction
         if not check_board(pacman.next_direction, pacman.position, app.board):
             direction = pacman.current_direction
         if not check_board(pacman.current_direction, pacman.position, app.board):
             direction = Direction.NONE
         pacman.current_direction = direction
-        app.board = eat_coin(pacman.position, app.board)
+        if pacman.x % 24 == 0 and pacman.y % 24 == 0:
+            app.board = eat_coin(pacman.position, app.board)
     else:
         direction = pacman.current_direction
 
