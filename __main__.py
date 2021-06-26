@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 import contextlib
-from typing import Dict, List, TYPE_CHECKING, Tuple
+from typing import Dict, List, Tuple
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -42,11 +42,11 @@ class PacManSprite(Sprite):
 
 
 class PacManApp(Application):
-    if TYPE_CHECKING:
-        board: TB
+    board: TB
 
 
-app = PacManApp(caption="PacMan", width=576, height=576, icon=sprites.pacman_open_right)
+app = PacManApp(caption="PacMan", width=576, height=576,
+                icon=sprites.pacman_open_right)
 board = """\
 ------------------------
 -**********************-

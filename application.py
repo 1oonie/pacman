@@ -55,12 +55,6 @@ class Application:
         self.stopped: bool = False
         self.clock: pygame.time.Clock = pygame.time.Clock()
 
-    def __setattr__(self, name: str, value: Any) -> None:
-        try:
-            super().__setattr__(name, value)
-        except AttributeError:
-            pass
-
     def __repr__(self) -> str:
         return "<Application width={0} height={1} caption={2}>".format(
             self.width, self.height, self.caption

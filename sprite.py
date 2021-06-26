@@ -39,12 +39,6 @@ class Sprite:
 
         self._position: Tuple[int, int] = pos
 
-    def __setattr__(self, name: str, value: Any) -> None:
-        try:
-            super().__setattr__(name, value)
-        except AttributeError:
-            pass
-
     @property
     def position(self) -> Tuple[int, int]:
         return self._position
