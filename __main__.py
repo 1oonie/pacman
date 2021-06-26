@@ -32,16 +32,12 @@ with contextlib.redirect_stdout(None):
 from application import Application
 from images import sprites, tiles
 from sprite import Sprite
+from enums import Tile, Direction
 
 app = Application(
     caption="PacMan", width=600, height=600, icon=sprites.pacman_open_right
 )
-
-
-@app.on("start")
-def start(app):
-    app.display.fill((0, 0, 0))
-    board = """\
+board = """\
 ------------------------
 -**********************-
 -**-------*************-
@@ -66,20 +62,65 @@ def start(app):
 -*********----*********-
 -**********************-
 ------------------------"""
-    for n_line, line in enumerate(board.split("\n")):
+
+
+def parse_board(board):
+    tiles_dict = {"-": Tile.WALL, "*": Tile.COIN, " ": Tile.BLANK}
+    res = []
+    for row in board.split("\n"):
+        line = []
+        for item in row:
+            line.append(tiles_dict[item])
+        res.append(line)
+    return res
+
+
+def render_board(app):
+    for n_line, line in enumerate(app.board):
         for n_item, item in enumerate(line):
-            if item == "-":
+            if item == Tile.WALL:
                 img = tiles.wall
-            elif item == "*":
+            elif item == Tile.COIN:
                 img = tiles.coin
-            elif item == " ":
+            elif item == Tile.BLANK:
                 continue
             app.display.blit(img, (n_item * 25, n_line * 25))
 
 
+@app.on("start")
+def start(app):
+    app.board = parse_board(board)
+
+    app.display.fill((0, 0, 0))
+    render_board(app)
+    pacman = Sprite(app.display, sprites.pacman_open_right, (25, 25))
+    pacman.direction = Direction.RIGHT
+    app.add_sprite(pacman, "pacman")
+
+
+@app.on("update")
+def update(app):
+    ...
+
+
 @app.on("keydown")
 def keydown(app, event):
+    pacman = app.get_sprite("pacman")
+    direction = None
+    # pylint: disable=no-member
     if event.key == pygame.K_ESCAPE:
         app.exit(0)
+    elif event.key == pygame.K_DOWN:
+        direction = Direction.DOWN
+    elif event.key == pygame.K_UP:
+        direction = Direction.UP
+    elif event.key == pygame.K_LEFT:
+        direction = Direction.LEFT
+    elif event.key == pygame.K_RIGHT:
+        direction = Direction.RIGHT
+    # pylint: enable
+    if direction:
+        pacman.direction = direction
+
 
 app.run()

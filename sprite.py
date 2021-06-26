@@ -32,6 +32,7 @@ class Sprite:
     def __init__(self, display, image, pos):
         self.display = display
         display.blit(image, pos)
+
         self._position = pos
 
     def __setattr__(self, name, value):
@@ -40,6 +41,22 @@ class Sprite:
     @property
     def position(self):
         return self._position
+
+    @property
+    def x(self):
+        return self._position[0]
+
+    @x.setter
+    def _x_setter(self, val):
+        self._position[0] = val
+
+    @property
+    def y(self):
+        return self._position[1]
+
+    @y.setter
+    def _y_setter(self, val):
+        self._position[1] = val
 
     def update(self, image, pos):
         self.display.blit(image, pos)
