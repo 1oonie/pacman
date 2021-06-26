@@ -34,7 +34,7 @@ from PIL import ImageDraw
 def converted(func):
     def deco(*args, convert=True, **kwargs):
         ret = func(*args, **kwargs)
-        ret = ret.resize((25, 25))
+        ret = ret.resize((24, 24))
         if convert:  # you might not want a pygame image
             return pygame.image.fromstring(ret.tobytes(), ret.size, ret.mode)
         return ret
