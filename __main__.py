@@ -25,8 +25,6 @@ SOFTWARE.
 import contextlib
 import math
 
-from pygame.constants import K_LEFT, K_RIGHT
-
 with contextlib.redirect_stdout(None):
     import pygame
     from pygame import gfxdraw
