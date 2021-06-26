@@ -26,7 +26,7 @@ import enum
 
 
 class Enum(enum.Enum):
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<{0}>".format(self._name_)  # pylint: disable=no-member
 
 

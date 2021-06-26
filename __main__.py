@@ -23,16 +23,17 @@ SOFTWARE.
 """
 
 import contextlib
-import math
+from typing import List, NoReturn, Tuple
 
 with contextlib.redirect_stdout(None):
     import pygame
-    from pygame import gfxdraw
 
 from application import Application
 from images import sprites, tiles
 from sprite import Sprite
 from enums import Tile, Direction
+
+TB = List[List[Tile]]
 
 app = Application(
     caption="PacMan", width=576, height=576, icon=sprites.pacman_open_right
@@ -64,7 +65,7 @@ board = """\
 ------------------------"""
 
 
-def parse_board(board):
+def parse_board(board: List[List[str]]) -> TB:
     tiles_dict = {"-": Tile.WALL, "*": Tile.COIN, " ": Tile.BLANK}
     res = []
     for row in board.split("\n"):
@@ -75,7 +76,7 @@ def parse_board(board):
     return res
 
 
-def render_board(board):
+def render_board(board: TB) -> NoReturn:
     for n_line, line in enumerate(board):
         for n_item, item in enumerate(line):
             if item == Tile.WALL:
@@ -87,7 +88,7 @@ def render_board(board):
             app.display.blit(img, (n_item * 24, n_line * 24))
 
 
-def check_board(direction, pos, board):
+def check_board(direction: Direction, pos: Tuple[int], board: TB) -> bool:
     if direction == Direction.RIGHT:
         return (board[pos[1] // 24][pos[0] // 24 + 1] != Tile.WALL)
     elif direction == Direction.LEFT:
@@ -101,7 +102,7 @@ def check_board(direction, pos, board):
 
 
 @app.on("start")
-def start(app):
+def start(app: Application) -> NoReturn:
     app.board = parse_board(board)
 
     app.display.fill((0, 0, 0))
@@ -113,7 +114,7 @@ def start(app):
 
 
 @app.on("update")
-def update(app):
+def update(app: Application) -> NoReturn:
     app.display.fill((0, 0, 0))
     render_board(app.board)
 
@@ -165,7 +166,7 @@ def update(app):
 
 
 @app.on("keydown")
-def keydown(app, event):
+def keydown(app: Application, event: pygame.event.EventType):
     pacman = app.get_sprite("pacman")
     # pylint: disable=no-member
     if event.key == pygame.K_ESCAPE:

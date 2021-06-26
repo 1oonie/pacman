@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 import contextlib
+from typing import Callable, Tuple, Union
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -31,8 +32,8 @@ from PIL import Image
 from PIL import ImageDraw
 
 
-def converted(func):
-    def deco(*args, convert=True, **kwargs):
+def converted(func) -> Callable:
+    def deco(*args, convert=True, **kwargs) -> Union[pygame.Surface, Image.Image]:
         ret = func(*args, **kwargs)
         ret = ret.resize((24, 24))
         if convert:  # you might not want a pygame image
@@ -46,20 +47,20 @@ class Sprites:
     def __init__(self):
         # Loading the images at the start (so no impact to performance)
 
-        self.pacman_open_right = self._pacman_open()
-        self.pacman_open_left = self._pacman_open(180)
-        self.pacman_open_bottom = self._pacman_open(270)
-        self.pacman_open_top = self._pacman_open(90)
+        self.pacman_open_right: pygame.Surface = self._pacman_open()
+        self.pacman_open_left: pygame.Surface = self._pacman_open(180)
+        self.pacman_open_bottom: pygame.Surface = self._pacman_open(270)
+        self.pacman_open_top: pygame.Surface = self._pacman_open(90)
 
-        self.pacman_closed = self._pacman_closed()
+        self.pacman_closed: pygame.Surface = self._pacman_closed()
 
-        self.ghost_red = self._ghost((255, 49, 0))
-        self.ghost_orange = self._ghost((255, 204, 0))
-        self.ghost_blue = self._ghost((0, 252, 255))
-        self.ghost_pink = self._ghost((254, 171, 210))
+        self.ghost_red: pygame.Surface = self._ghost((255, 49, 0))
+        self.ghost_orange: pygame.Surface = self._ghost((255, 204, 0))
+        self.ghost_blue: pygame.Surface = self._ghost((0, 252, 255))
+        self.ghost_pink: pygame.Surface = self._ghost((254, 171, 210))
 
     @converted
-    def _pacman_open(self, rotate=0):
+    def _pacman_open(self, rotate: int=0) -> Image.Image:
         im = Image.new("RGBA", (50, 50))
         draw = ImageDraw.Draw(im)
         draw.pieslice([0, 0, 50, 50], 45, 360 - 45, (255, 251, 0))
@@ -67,14 +68,14 @@ class Sprites:
         return im
 
     @converted
-    def _pacman_closed(self):
+    def _pacman_closed(self) -> Image.Image:
         im = Image.new("RGBA", (50, 50))
         draw = ImageDraw.Draw(im)
         draw.ellipse([0, 0, 50, 50], fill=(255, 251, 0))
         return im
 
     @converted
-    def _ghost(self, colour):
+    def _ghost(self, colour: Tuple[int]) -> Image.Image:
         im = Image.new("RGBA", (50, 50))
         draw = ImageDraw.Draw(im)
         draw.pieslice([0, 0, 50, 50], 180, 0, fill=colour)
@@ -101,18 +102,18 @@ sprites = Sprites()
 
 class Tiles:
     def __init__(self):
-        self.wall = self._wall()
-        self.coin = self._coin()
+        self.wall: pygame.Surface = self._wall()
+        self.coin: pygame.Surface = self._coin()
 
     @converted
-    def _wall(self):
+    def _wall(self) -> Image.Image:
         im = Image.new("RGBA", (50, 50))
         draw = ImageDraw.Draw(im)
         draw.rectangle([2, 2, 48, 48], fill=(18, 50, 239))
         return im
 
     @converted
-    def _coin(self):
+    def _coin(self) -> Image.Image:
         im = Image.new("RGBA", (50, 50), (0, 0, 0))
         draw = ImageDraw.Draw(im)
         draw.rectangle([21, 21, 29, 29], fill=(255, 255, 255))

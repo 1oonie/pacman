@@ -24,9 +24,12 @@ SOFTWARE.
 
 import contextlib
 import sys
+from typing import Any, Callable, NoReturn, Optional, Tuple, Union
 
 with contextlib.redirect_stdout(None):
     import pygame
+
+from sprite import Sprite
 
 # As you can see, pylint got a bit grumpy
 
@@ -36,35 +39,35 @@ class EventNotFound(Exception):
 
 
 class Application:
-    def __init__(self, *, caption, width, height, icon):
+    def __init__(self, *, caption: str, width: int, height: int, icon: pygame.Surface):
         pygame.init()  # pylint: disable=no-member
-        self.width = width
-        self.height = height
-        self.caption = caption
+        self.width: int = width
+        self.height: int = height
+        self.caption: str = caption
 
-        self.display = pygame.display.set_mode((width, height))
+        self.display: pygame.Surface = pygame.display.set_mode((width, height))
         pygame.display.set_icon(icon)
         pygame.display.set_caption(caption)
 
-        self.events = dict()
-        self.sprites = dict()
+        self.events: dict = dict()
+        self.sprites: dict = dict()
 
-        self.stopped = False
-        self.clock = pygame.time.Clock()
+        self.stopped: bool = False
+        self.clock: pygame.time.Clock = pygame.time.Clock()
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: Any) -> NoReturn:
         super().__setattr__(name, value)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<Application width={0} height={1} caption={2}>".format(
             self.width, self.height, self.caption
         )
 
     @property
-    def dimensions(self):
+    def dimensions(self) -> Tuple[int]:
         return (self.width, self.height)
 
-    def send(self, type_, event=None):
+    def send(self, type_: Union[str, int], event: Optional[pygame.event.EventType] = None) -> NoReturn:
         if type_ in ("start", "update"):
             e = self.events.get(type_, None)
             if not e:
@@ -75,8 +78,8 @@ class Application:
         if e:
             e(self, event)
 
-    def on(self, ev):
-        def deco(func):
+    def on(self, ev: str) -> Callable:
+        def deco(func) -> Callable:
             if ev in ("start", "update"):
                 self.events[ev] = func
                 return func
@@ -89,14 +92,13 @@ class Application:
 
         return deco
 
-    def exit(self, code=0):
+    def exit(self, code: int = 0) -> NoReturn:
         if self.stopped:
             raise RuntimeError("the app has already stopped")
         pygame.quit()  # pylint: disable=no-member
-        sys.exit(code)
         self.stopped = True
 
-    def run(self, *, fps=60):
+    def run(self, *, fps: int = 60):
         self.send("start")
         pygame.display.update()
 
@@ -111,13 +113,10 @@ class Application:
             self.clock.tick(fps)
 
         pygame.quit()  # pylint: disable=no-member
-        sys.exit(0)
 
-    def add_sprite(self, sprite, name):
+    def add_sprite(self, sprite: Sprite, name: int) -> NoReturn:
         self.sprites[name] = sprite
 
-    def get_sprite(self, name):
+    def get_sprite(self, name: str) -> Optional[Sprite]:
         res = self.sprites.get(name, None)
-        if not res:
-            raise AttributeError("no sprite exists called '{0}'".format(name))
         return res
