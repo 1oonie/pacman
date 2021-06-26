@@ -25,6 +25,8 @@ SOFTWARE.
 import contextlib
 import math
 
+from pygame.constants import K_LEFT, K_RIGHT
+
 with contextlib.redirect_stdout(None):
     import pygame
     from pygame import gfxdraw
@@ -106,19 +108,18 @@ def update(app):
 @app.on("keydown")
 def keydown(app, event):
     pacman = app.get_sprite("pacman")
-    direction = None
     # pylint: disable=no-member
     if event.key == pygame.K_ESCAPE:
         app.exit(0)
-    elif event.key == pygame.K_DOWN:
-        direction = Direction.DOWN
-    elif event.key == pygame.K_UP:
-        direction = Direction.UP
-    elif event.key == pygame.K_LEFT:
-        direction = Direction.LEFT
-    elif event.key == pygame.K_RIGHT:
-        direction = Direction.RIGHT
+
+    directions = {
+        pygame.K_DOWN: Direction.DOWN,
+        pygame.K_LEFT: Direction.LEFT,
+        pygame.K_UP: Direction.UP,
+        pygame.K_RIGHT: Direction.RIGHT
+    }
     # pylint: enable
+    direction = directions.get(event.key, None)
     if direction:
         pacman.direction = direction
 
