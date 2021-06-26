@@ -124,6 +124,7 @@ def isinverse(directions: Tuple[Direction, Direction]):
         Direction.LEFT: Direction.RIGHT,
         Direction.UP: Direction.DOWN,
         Direction.DOWN: Direction.UP,
+        Direction.NONE: Direction.NONE
     }
     return inverse_dict[directions[0]] == directions[1]
 
@@ -206,6 +207,24 @@ def keydown(app: PacManApp, event: pygame.event.EventType):
     }
     # pylint: enable
     direction = directions.get(event.key, None)
+    if direction:
+        pacman.next_direction = direction
+
+
+@app.on("mousebuttondown")
+def mouseclick(app: PacManApp, event):
+    pacman: PacManSprite = app.get_sprite("pacman")
+    x, y = event.pos
+    direction = None
+    if x < 192:
+        direction = Direction.LEFT
+    elif x > 384 and x < 576:
+        direction = Direction.RIGHT
+    elif x > 192 and x < 384:
+        if y < 287:
+            direction = Direction.UP
+        elif y > 287:
+            direction = Direction.DOWN
     if direction:
         pacman.next_direction = direction
 
