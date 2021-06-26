@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 import contextlib
-from typing import List, NoReturn, Tuple
+from typing import Dict, List, TYPE_CHECKING, Tuple
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -35,7 +35,18 @@ from enums import Tile, Direction
 
 TB = List[List[Tile]]
 
-app = Application(
+
+class PacManSprite(Sprite):
+    current_direction: Direction = Direction.RIGHT
+    next_direction: Direction = Direction.RIGHT
+
+
+class PacManApp(Application):
+    if TYPE_CHECKING:
+        board: TB
+
+
+app = PacManApp(
     caption="PacMan", width=576, height=576, icon=sprites.pacman_open_right
 )
 board = """\
@@ -79,6 +90,7 @@ def parse_board(board: str) -> TB:
 def render_board(board: TB) -> None:
     for n_line, line in enumerate(board):
         for n_item, item in enumerate(line):
+            img = tiles.wall
             if item == Tile.WALL:
                 img = tiles.wall
             elif item == Tile.COIN:
@@ -101,36 +113,42 @@ def check_board(direction: Direction, pos: Tuple[int, int], board: TB) -> bool:
         return True
 
 
+def eat_coin(pos: Tuple[int, int], board: TB) -> TB:
+    current = board[pos[1] // 24][pos[0] // 24]
+    if current == Tile.COIN:
+        board[pos[1] // 24][pos[0] // 24] = Tile.BLANK
+    return board
+
+
 @app.on("start")
-def start(app: Application) -> None:
+def start(app: PacManApp) -> None:
     app.board = parse_board(board)
 
     app.display.fill((0, 0, 0))
     render_board(app.board)
-    pacman = Sprite(app.display, sprites.pacman_open_right, (24, 24))
-    pacman.next_direction = Direction.RIGHT
-    pacman.current_direction = Direction.RIGHT
+    pacman = PacManSprite(app.display, sprites.pacman_open_right, (24, 24))
+    # pacman.next_direction = Direction.RIGHT
+    # pacman.current_direction = Direction.RIGHT
     app.add_sprite(pacman, "pacman")
 
 
 @app.on("update")
-def update(app: Application) -> None:
+def update(app: PacManApp) -> None:
     app.display.fill((0, 0, 0))
     render_board(app.board)
 
-    pacman = app.get_sprite("pacman")
-    # print(round(pacman.x % 24) == 0)
+    pacman: PacManSprite = app.get_sprite("pacman")
     if (
         pacman.x % 24 == 0
         and pacman.y % 24 == 0
     ):
         direction = pacman.next_direction
-        print(check_board(pacman.current_direction, pacman.position, app.board))
         if not check_board(pacman.next_direction, pacman.position, app.board):
             direction = pacman.current_direction
         if not check_board(pacman.current_direction, pacman.position, app.board):
             direction = Direction.NONE
         pacman.current_direction = direction
+        app.board = eat_coin(pacman.position, app.board)
     else:
         direction = pacman.current_direction
 
@@ -166,8 +184,8 @@ def update(app: Application) -> None:
 
 
 @app.on("keydown")
-def keydown(app: Application, event: pygame.event.EventType):
-    pacman = app.get_sprite("pacman")
+def keydown(app: PacManApp, event: pygame.event.EventType):
+    pacman: PacManSprite = app.get_sprite("pacman")
     # pylint: disable=no-member
     if event.key == pygame.K_ESCAPE:
         app.exit(0)

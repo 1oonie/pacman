@@ -49,7 +49,7 @@ class Application:
         pygame.display.set_icon(icon)
         pygame.display.set_caption(caption)
 
-        self.events: Dict[int, Callable] = dict()
+        self.events: Dict[Union[int, str], Callable] = dict()
         self.sprites: Dict[str, Sprite] = dict()
 
         self.stopped: bool = False
@@ -70,15 +70,15 @@ class Application:
     def dimensions(self) -> Tuple[int, int]:
         return (self.width, self.height)
 
-    def send(self, type_: Union[str, int], event: Optional[pygame.event.EventType] = None) -> None:
-        if type_ in ("start", "update"):
-            e = self.events.get(type_, None)
-            if not e:
-                return
-            e(self)
+    def send(self, type_: Any, event: Optional[pygame.event.EventType] = None) -> None:
+        try:
+            e = self.events[type_]
+        except KeyError:
             return
-        e = self.events.get(type_, None)
-        if e:
+        if type_ in ("start", "update"):
+            e(self)
+
+        else:
             e(self, event)
 
     def on(self, ev: str) -> Callable:
@@ -120,6 +120,6 @@ class Application:
     def add_sprite(self, sprite: Sprite, name: str) -> None:
         self.sprites[name] = sprite
 
-    def get_sprite(self, name: str) -> Optional[Sprite]:
+    def get_sprite(self, name: str) -> Any:
         res = self.sprites.get(name, None)
         return res

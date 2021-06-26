@@ -60,7 +60,7 @@ class Sprites:
         self.ghost_pink: pygame.Surface = self._ghost((254, 171, 210))
 
     @converted
-    def _pacman_open(self, rotate: int=0) -> Image.Image:
+    def _pacman_open(self, rotate: int = 0) -> Image.Image:
         im = Image.new("RGBA", (50, 50))
         draw = ImageDraw.Draw(im)
         draw.pieslice([0, 0, 50, 50], 45, 360 - 45, (255, 251, 0))
@@ -109,14 +109,15 @@ class Tiles:
     def _wall(self) -> Image.Image:
         im = Image.new("RGBA", (50, 50))
         draw = ImageDraw.Draw(im)
-        draw.rectangle([2, 2, 48, 48], fill=(18, 50, 239))
+        draw.rectangle([2, 2, 48, 48], outline=(
+            18, 50, 239), width=5, fill=(0, 0, 0))
         return im
 
     @converted
     def _coin(self) -> Image.Image:
         im = Image.new("RGBA", (50, 50), (0, 0, 0))
         draw = ImageDraw.Draw(im)
-        draw.rectangle([21, 21, 29, 29], fill=(255, 255, 255))
+        draw.rectangle([21, 21, 29, 29], fill=(255, 170, 164))
         im = im.rotate(45)
         return im
 
