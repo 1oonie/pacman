@@ -23,28 +23,28 @@ SOFTWARE.
 """
 
 import contextlib
-from typing import Any, NoReturn, Tuple
+from typing import Any, Tuple
 
 with contextlib.redirect_stdout(None):
     import pygame
 
 
 class Sprite:
-    def __init__(self, display: pygame.Surface, image: pygame.Surface, pos: Tuple[int]):
+    def __init__(self, display: pygame.Surface, image: pygame.Surface, pos: Tuple[int, int]):
         self.display: pygame.Surface = display
         display.blit(image, pos)
         self.image: pygame.Surface = image
 
-        self._position: Tuple[int] = pos
+        self._position: Tuple[int, int] = pos
 
-    def __setattr__(self, name: str, value: Any) -> NoReturn:
+    def __setattr__(self, name: str, value: Any) -> None:
         try:
             super().__setattr__(name, value)
         except AttributeError:
             pass
 
     @property
-    def position(self) -> Tuple[int]:
+    def position(self) -> Tuple[int, int]:
         return self._position
 
     @property
@@ -55,7 +55,7 @@ class Sprite:
     def y(self) -> int:
         return self._position[1]
 
-    def update(self, image: pygame.Surface, pos: Tuple[int]) -> NoReturn:
+    def update(self, image: pygame.Surface, pos: Tuple[int, int]) -> None:
         self.display.blit(image, self._position)
         self._position = pos
         self.image = image

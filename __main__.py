@@ -65,7 +65,7 @@ board = """\
 ------------------------"""
 
 
-def parse_board(board: List[List[str]]) -> TB:
+def parse_board(board: str) -> TB:
     tiles_dict = {"-": Tile.WALL, "*": Tile.COIN, " ": Tile.BLANK}
     res = []
     for row in board.split("\n"):
@@ -76,7 +76,7 @@ def parse_board(board: List[List[str]]) -> TB:
     return res
 
 
-def render_board(board: TB) -> NoReturn:
+def render_board(board: TB) -> None:
     for n_line, line in enumerate(board):
         for n_item, item in enumerate(line):
             if item == Tile.WALL:
@@ -88,7 +88,7 @@ def render_board(board: TB) -> NoReturn:
             app.display.blit(img, (n_item * 24, n_line * 24))
 
 
-def check_board(direction: Direction, pos: Tuple[int], board: TB) -> bool:
+def check_board(direction: Direction, pos: Tuple[int, int], board: TB) -> bool:
     if direction == Direction.RIGHT:
         return (board[pos[1] // 24][pos[0] // 24 + 1] != Tile.WALL)
     elif direction == Direction.LEFT:
@@ -102,7 +102,7 @@ def check_board(direction: Direction, pos: Tuple[int], board: TB) -> bool:
 
 
 @app.on("start")
-def start(app: Application) -> NoReturn:
+def start(app: Application) -> None:
     app.board = parse_board(board)
 
     app.display.fill((0, 0, 0))
@@ -114,7 +114,7 @@ def start(app: Application) -> NoReturn:
 
 
 @app.on("update")
-def update(app: Application) -> NoReturn:
+def update(app: Application) -> None:
     app.display.fill((0, 0, 0))
     render_board(app.board)
 

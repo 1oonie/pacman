@@ -24,7 +24,7 @@ SOFTWARE.
 
 import contextlib
 import sys
-from typing import Any, Callable, NoReturn, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -49,14 +49,17 @@ class Application:
         pygame.display.set_icon(icon)
         pygame.display.set_caption(caption)
 
-        self.events: dict = dict()
-        self.sprites: dict = dict()
+        self.events: Dict[int, Callable] = dict()
+        self.sprites: Dict[str, Sprite] = dict()
 
         self.stopped: bool = False
         self.clock: pygame.time.Clock = pygame.time.Clock()
 
-    def __setattr__(self, name: str, value: Any) -> NoReturn:
-        super().__setattr__(name, value)
+    def __setattr__(self, name: str, value: Any) -> None:
+        try:
+            super().__setattr__(name, value)
+        except AttributeError:
+            pass
 
     def __repr__(self) -> str:
         return "<Application width={0} height={1} caption={2}>".format(
@@ -64,10 +67,10 @@ class Application:
         )
 
     @property
-    def dimensions(self) -> Tuple[int]:
+    def dimensions(self) -> Tuple[int, int]:
         return (self.width, self.height)
 
-    def send(self, type_: Union[str, int], event: Optional[pygame.event.EventType] = None) -> NoReturn:
+    def send(self, type_: Union[str, int], event: Optional[pygame.event.EventType] = None) -> None:
         if type_ in ("start", "update"):
             e = self.events.get(type_, None)
             if not e:
@@ -92,7 +95,7 @@ class Application:
 
         return deco
 
-    def exit(self, code: int = 0) -> NoReturn:
+    def exit(self, code: int = 0) -> None:
         if self.stopped:
             raise RuntimeError("the app has already stopped")
         pygame.quit()  # pylint: disable=no-member
@@ -114,7 +117,7 @@ class Application:
 
         pygame.quit()  # pylint: disable=no-member
 
-    def add_sprite(self, sprite: Sprite, name: int) -> NoReturn:
+    def add_sprite(self, sprite: Sprite, name: str) -> None:
         self.sprites[name] = sprite
 
     def get_sprite(self, name: str) -> Optional[Sprite]:

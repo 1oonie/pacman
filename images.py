@@ -75,7 +75,7 @@ class Sprites:
         return im
 
     @converted
-    def _ghost(self, colour: Tuple[int]) -> Image.Image:
+    def _ghost(self, colour: Tuple[int, int, int]) -> Image.Image:
         im = Image.new("RGBA", (50, 50))
         draw = ImageDraw.Draw(im)
         draw.pieslice([0, 0, 50, 50], 180, 0, fill=colour)
