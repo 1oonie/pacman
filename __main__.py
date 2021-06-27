@@ -34,6 +34,7 @@ from sprite import Sprite
 from enums import Tile, Direction
 
 TB = List[List[Tile]]
+PACMAN_SPEED = 2
 
 
 class PacManSprite(Sprite):
@@ -50,26 +51,26 @@ app = PacManApp(caption="PacMan", width=576, height=576,
 board = """\
 ------------------------
 -**********************-
--**-------*************-
--**********************-
--******-****--------***-
--*******-**************-
--**********************-
--*****---*---********-*-
--*****-*****-***------*-
--*******--**-**********-
--***********-**********-
--****************---***-
--****----*********-****-
--****-************-****-
--****-*****************-
--****-*******-*-*******-
--************-*-*******-
--***-******---*-*******-
--***-**********-*******-
--***-******-----*******-
--***-******************-
--*********----*********-
+-*--------------------*-
+-*-******************-*-
+-*-*----------------*-*-
+-*-*-**************-*-*-
+-*-*-*------------*-*-*-
+-*-*-*-**********-*-*-*-
+-*-*-*-*--------*-*-*-*-
+-*-*-*-*-******-*-*-*-*-
+-*-*-*-*-*----*-*-*-*-*-
+-*-*-*-*-*-**-*-*-*-*-*-
+-*-*-*-*-*-**-*-*-*-*-*-
+-*-*-*-*-*--*-*-*-*-*-*-
+-*-*-*-*-****-*-*-*-*-*-
+-*-*-*-*------*-*-*-*-*-
+-*-*-*-********-*-*-*-*-
+-*-*-*----------*-*-*-*-
+-*-*-************-*-*-*-
+-*-*--------------*-*-*-
+-*-****************-*-*-
+-*------------------*-*-
 -**********************-
 ------------------------"""
 
@@ -94,7 +95,9 @@ def render_board(board: TB) -> None:
             elif item == Tile.COIN:
                 img = tiles.coin
             elif item == Tile.BLANK:
-                continue
+                img = tiles.blank
+                # remember, don't "continue" here cause
+                # it speeds up when the is no coin
             app.display.blit(img, (n_item * 24, n_line * 24))
 
 
@@ -144,9 +147,10 @@ def start(app: PacManApp) -> None:
 @app.on("update")
 def update(app: PacManApp) -> None:
     app.display.fill((0, 0, 0))
-    render_board(app.board)
 
     pacman: PacManSprite = app.get_sprite("pacman")
+    render_board(app.board)
+
     if (pacman.x % 24 == 0 and pacman.y % 24 == 0) or isinverse(
         (pacman.current_direction, pacman.next_direction)
     ):
@@ -165,25 +169,25 @@ def update(app: PacManApp) -> None:
     img = pacman.image
 
     if direction == Direction.RIGHT:
-        x += 2
+        x += PACMAN_SPEED
         if x % 24 < 12:
             img = sprites.pacman_open_right
         else:
             img = sprites.pacman_closed
     elif direction == Direction.LEFT:
-        x -= 2
+        x -= PACMAN_SPEED
         if x % 24 < 12:
             img = sprites.pacman_open_left
         else:
             img = sprites.pacman_closed
     elif direction == Direction.UP:
-        y -= 2
+        y -= PACMAN_SPEED
         if y % 24 < 12:
             img = sprites.pacman_open_top
         else:
             img = sprites.pacman_closed
     elif direction == Direction.DOWN:
-        y += 2
+        y += PACMAN_SPEED
         if y % 24 < 12:
             img = sprites.pacman_open_bottom
         else:

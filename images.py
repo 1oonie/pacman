@@ -104,21 +104,27 @@ class Tiles:
     def __init__(self):
         self.wall: pygame.Surface = self._wall()
         self.coin: pygame.Surface = self._coin()
+        self.blank: pygame.Surface = self._blank()
 
     @converted
     def _wall(self) -> Image.Image:
         im = Image.new("RGBA", (50, 50))
         draw = ImageDraw.Draw(im)
-        draw.rectangle([2, 2, 48, 48], outline=(18, 50, 239), width=5, fill=(0, 0, 0))
+        draw.rectangle([2, 2, 48, 48], outline=(
+            18, 50, 239), width=5, fill=(0, 0, 0))
         return im
 
     @converted
-    def _coin(self) -> Image.Image:
+    def _coin(self, rotate: int = 45) -> Image.Image:
         im = Image.new("RGBA", (50, 50), (0, 0, 0))
         draw = ImageDraw.Draw(im)
-        draw.rectangle([21, 21, 29, 29], fill=(255, 170, 164))
-        im = im.rotate(45)
+        draw.rectangle([21, 21, 29, 29], fill=(255, 251, 0))
+        im = im.rotate(rotate)
         return im
 
+    @converted
+    def _blank(self) -> Image.Image:
+        im = Image.new("RGBA", (50, 50), (0, 0, 0))
+        return im
 
 tiles = Tiles()

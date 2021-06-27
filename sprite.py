@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 import contextlib
-from typing import Any, Tuple
+from typing import Tuple
 
 with contextlib.redirect_stdout(None):
     import pygame

@@ -23,15 +23,12 @@ SOFTWARE.
 """
 
 import contextlib
-import sys
 from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 with contextlib.redirect_stdout(None):
     import pygame
 
 from sprite import Sprite
-
-# As you can see, pylint got a bit grumpy
 
 
 class EventNotFound(Exception):
