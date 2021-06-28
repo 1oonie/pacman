@@ -23,15 +23,17 @@ SOFTWARE.
 """
 
 import contextlib
-from typing import List, Tuple
 import sys
+from typing import List, Tuple
+
+from application import Application
+from enums import Direction, Tile
+from sprite import Sprite
 
 with contextlib.redirect_stdout(None):
     import pygame
 
-from application import Application
-from sprite import Sprite
-from enums import Tile, Direction
+
 
 TB = List[List[Tile]]
 PACMAN_SPEED = 2

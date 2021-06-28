@@ -25,11 +25,13 @@ SOFTWARE.
 import contextlib
 from typing import Callable, Tuple, Union
 
+from PIL import Image
+from PIL import ImageDraw
+
 with contextlib.redirect_stdout(None):
     import pygame
 
-from PIL import Image
-from PIL import ImageDraw
+
 
 
 def save_asset(func) -> Callable:
