@@ -40,6 +40,7 @@ PACMAN_SPEED = 2
 class PacManSprite(Sprite):
     current_direction: Direction = Direction.RIGHT
     next_direction: Direction = Direction.RIGHT
+    score: int
 
 
 class PacManApp(Application):
@@ -135,9 +136,12 @@ def check_board(direction: Direction, pos: Tuple[int, int], board: TB) -> bool:
         return True
 
 
-def eat_coin(pos: Tuple[int, int], board: TB) -> TB:
+def eat_coin(pacman: PacManSprite, board: TB) -> TB:
+    pos: Tuple[int, int] = pacman.position
     current = board[pos[1] // 24][pos[0] // 24]
     if current == Tile.COIN:
+        pacman.score += 1
+        pygame.display.set_caption("PacMan: " + str(pacman.score) + " points")
         board[pos[1] // 24][pos[0] // 24] = Tile.BLANK
     return board
 
@@ -160,8 +164,7 @@ def start(app: PacManApp) -> None:
     app.display.fill((0, 0, 0))
     render_board(app.board)
     pacman = PacManSprite(app.display, PACMAN_OPEN_RIGHT, (24, 24))
-    # pacman.next_direction = Direction.RIGHT
-    # pacman.current_direction = Direction.RIGHT
+    pacman.score = 0
     app.add_sprite(pacman, "pacman")
 
 
@@ -182,7 +185,7 @@ def update(app: PacManApp) -> None:
             direction = Direction.NONE
         pacman.current_direction = direction
         if pacman.x % 24 == 0 and pacman.y % 24 == 0:
-            app.board = eat_coin(pacman.position, app.board)
+            app.board = eat_coin(pacman, app.board)
     else:
         direction = pacman.current_direction
 
