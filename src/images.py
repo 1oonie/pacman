@@ -36,7 +36,7 @@ def save_asset(func) -> Callable:
     def deco(*args, filename: str, **kwargs) -> Image.Image:
         ret = func(*args, **kwargs)
         ret = ret.resize((24, 24))
-        ret.save("assets/" + filename)
+        ret.save("../assets/" + filename)
         return ret
     return deco
 

@@ -48,7 +48,7 @@ class PacManApp(Application):
 
 
 def load(file: str) -> pygame.Surface:
-    path = "assets/" + file + ".png"
+    path = "../assets/" + file + ".png"
     return pygame.image.load(path)
 
 
