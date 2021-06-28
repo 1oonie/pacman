@@ -46,15 +46,26 @@ class PacManApp(Application):
     board: TB
 
 
-images: Dict[str, pygame.Surface] = dict()
-for file in os.listdir("./assets"):
-    images[file[:-4].upper()] = pygame.image.load("assets/" + file)
-print(images)
-globals().update(images)
+def load(file: str) -> pygame.Surface:
+    path = "assets/" + file + ".png"
+    return pygame.image.load(path)
 
-# this is the most hacky way to load the images...
-# however i cannot think of a better way other than loading
-# them all separately... :(
+
+PACMAN_OPEN_RIGHT = load("pacman_open_right")
+PACMAN_OPEN_LEFT = load("pacman_open_left")
+PACMAN_OPEN_DOWN = load("pacman_open_down")
+PACMAN_OPEN_UP = load("pacman_open_up")
+PACMAN_CLOSED = load("pacman_closed")
+
+GHOST_PINK = load("ghost_pink")
+GHOST_RED = load("ghost_red")
+GHOST_ORANGE = load("ghost_orange")
+GHOST_BLUE = load("ghost_blue")
+
+BLANK = load("blank")
+COIN = load("coin")
+WALL = load("wall")
+
 
 app = PacManApp(caption="PacMan", width=576, height=576,
                 icon=PACMAN_OPEN_RIGHT)
