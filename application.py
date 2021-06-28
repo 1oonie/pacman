@@ -21,14 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from __future__ import annotations
 
 import contextlib
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, Tuple, Union
 
 with contextlib.redirect_stdout(None):
     import pygame
 
-from sprite import Sprite
+if TYPE_CHECKING:
+    from sprite import Sprite
 
 
 class EventNotFound(Exception):
@@ -110,6 +112,7 @@ class Application:
         pygame.quit()  # pylint: disable=no-member
 
     def add_sprite(self, sprite: Sprite, name: str) -> None:
+        sprite.app = self
         self.sprites[name] = sprite
 
     def get_sprite(self, name: str) -> Any:

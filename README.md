@@ -17,7 +17,7 @@ Packages required by pacman are:
 
 - [ ] Scoring
   - [x] Update title every time pacman eats a coin
-  - [ ] Stop the game when pacman eats all the coins
+  - [x] Stop the game when pacman eats all the coins
 - [ ] Ghosts
   - [ ] Implement pathfinding for ghosts to find the tile they want to head for
   - [ ] Only choose between paths that can be taken

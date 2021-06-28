@@ -21,12 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from __future__ import annotations
 
 import contextlib
-from typing import Tuple
+from typing import TYPE_CHECKING, Tuple
 
 with contextlib.redirect_stdout(None):
     import pygame
+
+if TYPE_CHECKING:
+    from application import Application
 
 
 class Sprite:
@@ -38,6 +42,7 @@ class Sprite:
         self.image: pygame.Surface = image
 
         self._position: Tuple[int, int] = pos
+        self.app: Application
 
     @property
     def position(self) -> Tuple[int, int]:

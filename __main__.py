@@ -23,8 +23,8 @@ SOFTWARE.
 """
 
 import contextlib
-from typing import Dict, List, Tuple
-import os
+from typing import List, Tuple
+import sys
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -72,28 +72,28 @@ app = PacManApp(caption="PacMan", width=576, height=576,
                 icon=PACMAN_OPEN_RIGHT)
 board = """\
 ------------------------
--**********************-
--*--------------------*-
--*-******************-*-
--*-*----------------*-*-
--*-*-**************-*-*-
--*-*-*------------*-*-*-
--*-*-*-**********-*-*-*-
--*-*-*-*--------*-*-*-*-
--*-*-*-*-******-*-*-*-*-
--*-*-*-*-*----*-*-*-*-*-
--*-*-*-*-*-**-*-*-*-*-*-
--*-*-*-*-*-**-*-*-*-*-*-
--*-*-*-*-*--*-*-*-*-*-*-
--*-*-*-*-****-*-*-*-*-*-
--*-*-*-*------*-*-*-*-*-
--*-*-*-********-*-*-*-*-
--*-*-*----------*-*-*-*-
--*-*-************-*-*-*-
--*-*--------------*-*-*-
--*-****************-*-*-
--*------------------*-*-
--**********************-
+-              *       -
+- -------------------- -
+- -                  - -
+- - ---------------- - -
+- - -              - - -
+- - - ------------ - - -
+- - - -          - - - -
+- - - - -------- - - - -
+- - - - -      - - - - -
+- - - - - ---- - - - - -
+- - - - - -  - - - - - -
+- - - - - -  - - - - - -
+- - - - - -- - - - - - -
+- - - - -    - - - - - -
+- - - - ------ - - - - -
+- - - -        - - - - -
+- - - ---------- - - - -
+- - -            - - - -
+- - -------------- - - -
+- -                - - -
+- ------------------ - -
+-                      -
 ------------------------"""
 
 
@@ -136,14 +136,25 @@ def check_board(direction: Direction, pos: Tuple[int, int], board: TB) -> bool:
         return True
 
 
-def eat_coin(pacman: PacManSprite, board: TB) -> TB:
+def eat_coin(pacman: PacManSprite, b: TB) -> TB:
     pos: Tuple[int, int] = pacman.position
-    current = board[pos[1] // 24][pos[0] // 24]
+    current = b[pos[1] // 24][pos[0] // 24]
     if current == Tile.COIN:
         pacman.score += 1
         pygame.display.set_caption("PacMan: " + str(pacman.score) + " points")
-        board[pos[1] // 24][pos[0] // 24] = Tile.BLANK
-    return board
+        b[pos[1] // 24][pos[0] // 24] = Tile.BLANK
+
+        def check() -> bool:
+            nonlocal b
+            flattened: List[Tile] = [item for sublist in b for item in sublist]
+            return Tile.COIN not in flattened
+
+        if check():
+            pacman.app.exit(0)
+            print("You won!")
+            sys.exit(0)
+
+    return b
 
 
 def isinverse(directions: Tuple[Direction, Direction]):
