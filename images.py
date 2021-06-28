@@ -32,99 +32,96 @@ from PIL import Image
 from PIL import ImageDraw
 
 
-def converted(func) -> Callable:
-    def deco(*args, convert=True, **kwargs) -> Union[pygame.Surface, Image.Image]:
+def save_asset(func) -> Callable:
+    def deco(*args, filename: str, **kwargs) -> Image.Image:
         ret = func(*args, **kwargs)
         ret = ret.resize((24, 24))
-        if convert:  # you might not want a pygame image
-            return pygame.image.fromstring(ret.tobytes(), ret.size, ret.mode)
+        ret.save("assets/" + filename)
         return ret
-
     return deco
 
 
-class Sprites:
-    def __init__(self):
-        # Loading the images at the start (so no impact to performance)
-
-        self.pacman_open_right: pygame.Surface = self._pacman_open()
-        self.pacman_open_left: pygame.Surface = self._pacman_open(180)
-        self.pacman_open_bottom: pygame.Surface = self._pacman_open(270)
-        self.pacman_open_top: pygame.Surface = self._pacman_open(90)
-
-        self.pacman_closed: pygame.Surface = self._pacman_closed()
-
-        self.ghost_red: pygame.Surface = self._ghost((255, 49, 0))
-        self.ghost_orange: pygame.Surface = self._ghost((255, 204, 0))
-        self.ghost_blue: pygame.Surface = self._ghost((0, 252, 255))
-        self.ghost_pink: pygame.Surface = self._ghost((254, 171, 210))
-
-    @converted
-    def _pacman_open(self, rotate: int = 0) -> Image.Image:
-        im = Image.new("RGBA", (50, 50))
-        draw = ImageDraw.Draw(im)
-        draw.pieslice([0, 0, 50, 50], 45, 360 - 45, (255, 251, 0))
-        im = im.rotate(rotate)
-        return im
-
-    @converted
-    def _pacman_closed(self) -> Image.Image:
-        im = Image.new("RGBA", (50, 50))
-        draw = ImageDraw.Draw(im)
-        draw.ellipse([0, 0, 50, 50], fill=(255, 251, 0))
-        return im
-
-    @converted
-    def _ghost(self, colour: Tuple[int, int, int]) -> Image.Image:
-        im = Image.new("RGBA", (50, 50))
-        draw = ImageDraw.Draw(im)
-        draw.pieslice([0, 0, 50, 50], 180, 0, fill=colour)
-        draw.rectangle([0, 25, 50, 40], fill=colour)
-
-        for i in (10, 30):
-            draw.ellipse([i, 15, i + 10, 25], fill=(255, 255, 255))
-            draw.ellipse([i + 2, 17, i + 8, 23], fill=(0, 72, 255))
-
-        for i in range(1, 4):
-            points = [
-                (i * (50 / 3) - 50 / 3, 40),
-                (i * (50 / 3), 40),
-                (i * (50 / 3) - 50 / 3 / 2, 50),
-            ]
-            # maths which spits out a triangle
-            draw.polygon(points, fill=colour)
-
-        return im
+@save_asset
+def _pacman_open(rotate: int = 0) -> Image.Image:
+    im = Image.new("RGBA", (50, 50))
+    draw = ImageDraw.Draw(im)
+    draw.pieslice([0, 0, 50, 50], 45, 360 - 45, (255, 251, 0))
+    im = im.rotate(rotate)
+    return im
 
 
-sprites = Sprites()
+@save_asset
+def _pacman_closed() -> Image.Image:
+    im = Image.new("RGBA", (50, 50))
+    draw = ImageDraw.Draw(im)
+    draw.ellipse([0, 0, 50, 50], fill=(255, 251, 0))
+    return im
 
 
-class Tiles:
-    def __init__(self):
-        self.wall: pygame.Surface = self._wall()
-        self.coin: pygame.Surface = self._coin()
-        self.blank: pygame.Surface = self._blank()
+@save_asset
+def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
+    im = Image.new("RGBA", (50, 50))
+    draw = ImageDraw.Draw(im)
+    draw.pieslice([0, 0, 50, 50], 180, 0, fill=colour)
+    draw.rectangle([0, 25, 50, 40], fill=colour)
 
-    @converted
-    def _wall(self) -> Image.Image:
-        im = Image.new("RGBA", (50, 50))
-        draw = ImageDraw.Draw(im)
-        draw.rectangle([2, 2, 48, 48], outline=(
-            18, 50, 239), width=5, fill=(0, 0, 0))
-        return im
+    for i in (10, 30):
+        draw.ellipse([i, 15, i + 10, 25], fill=(255, 255, 255))
+        draw.ellipse([i + 2, 17, i + 8, 23], fill=(0, 72, 255))
 
-    @converted
-    def _coin(self, rotate: int = 45) -> Image.Image:
-        im = Image.new("RGBA", (50, 50), (0, 0, 0))
-        draw = ImageDraw.Draw(im)
-        draw.rectangle([21, 21, 29, 29], fill=(255, 251, 0))
-        im = im.rotate(rotate)
-        return im
+    for i in range(1, 4):
+        points = [
+            (i * (50 / 3) - 50 / 3, 40),
+            (i * (50 / 3), 40),
+            (i * (50 / 3) - 50 / 3 / 2, 50),
+        ]
+        # maths which spits out a triangle
+        draw.polygon(points, fill=colour)
 
-    @converted
-    def _blank(self) -> Image.Image:
-        im = Image.new("RGBA", (50, 50), (0, 0, 0))
-        return im
+    return im
 
-tiles = Tiles()
+
+@save_asset
+def _wall() -> Image.Image:
+    im = Image.new("RGBA", (50, 50))
+    draw = ImageDraw.Draw(im)
+    draw.rectangle([2, 2, 48, 48], outline=(
+        18, 50, 239), width=5, fill=(0, 0, 0))
+    return im
+
+
+@save_asset
+def _coin(rotate: int = 45) -> Image.Image:
+    im = Image.new("RGBA", (50, 50), (0, 0, 0))
+    draw = ImageDraw.Draw(im)
+    draw.rectangle([21, 21, 29, 29], fill=(255, 251, 0))
+    im = im.rotate(rotate)
+    return im
+
+
+@save_asset
+def _blank() -> Image.Image:
+    im = Image.new("RGBA", (50, 50), (0, 0, 0))
+    return im
+
+
+if __name__ == "__main__":
+    # automatically save all the images if we run the file
+
+    # pylint: disable=unexpected-keyword-arg
+    _pacman_open(filename="pacman_open_right.png")
+    _pacman_open(180, filename="pacman_open_left.png")
+    _pacman_open(270, filename="pacman_open_down.png")
+    _pacman_open(90, filename="pacman_open_up.png")
+
+    _pacman_closed(filename="pacman_closed.png")
+
+    _ghost((255, 49, 0), filename="ghost_red.png")
+    _ghost((255, 204, 0), filename="ghost_orange.png")
+    _ghost((0, 252, 255), filename="ghost_blue.png")
+    _ghost((254, 171, 210), filename="ghost_pink.png")
+
+    _wall(filename="wall.png")
+    _coin(filename="coin.png")
+    _blank(filename="blank.png")
+    # pylint: enable

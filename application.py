@@ -105,6 +105,7 @@ class Application:
             self.send("update")
             pygame.display.update()
             self.clock.tick(fps)
+            # print(self.clock.get_fps())
 
         pygame.quit()  # pylint: disable=no-member
 

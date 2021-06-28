@@ -24,12 +24,12 @@ SOFTWARE.
 
 import contextlib
 from typing import Dict, List, Tuple
+import os
 
 with contextlib.redirect_stdout(None):
     import pygame
 
 from application import Application
-from images import sprites, tiles
 from sprite import Sprite
 from enums import Tile, Direction
 
@@ -46,8 +46,18 @@ class PacManApp(Application):
     board: TB
 
 
+images: Dict[str, pygame.Surface] = dict()
+for file in os.listdir("./assets"):
+    images[file[:-4].upper()] = pygame.image.load("assets/" + file)
+print(images)
+globals().update(images)
+
+# this is the most hacky way to load the images...
+# however i cannot think of a better way other than loading
+# them all separately... :(
+
 app = PacManApp(caption="PacMan", width=576, height=576,
-                icon=sprites.pacman_open_right)
+                icon=PACMAN_OPEN_RIGHT)
 board = """\
 ------------------------
 -**********************-
@@ -89,13 +99,13 @@ def parse_board(board: str) -> TB:
 def render_board(board: TB) -> None:
     for n_line, line in enumerate(board):
         for n_item, item in enumerate(line):
-            img = tiles.wall
+            img = WALL
             if item == Tile.WALL:
-                img = tiles.wall
+                img = WALL
             elif item == Tile.COIN:
-                img = tiles.coin
+                img = COIN
             elif item == Tile.BLANK:
-                img = tiles.blank
+                img = BLANK
                 # remember, don't "continue" here cause
                 # it speeds up when the is no coin
             app.display.blit(img, (n_item * 24, n_line * 24))
@@ -138,7 +148,7 @@ def start(app: PacManApp) -> None:
 
     app.display.fill((0, 0, 0))
     render_board(app.board)
-    pacman = PacManSprite(app.display, sprites.pacman_open_right, (24, 24))
+    pacman = PacManSprite(app.display, PACMAN_OPEN_RIGHT, (24, 24))
     # pacman.next_direction = Direction.RIGHT
     # pacman.current_direction = Direction.RIGHT
     app.add_sprite(pacman, "pacman")
@@ -171,27 +181,27 @@ def update(app: PacManApp) -> None:
     if direction == Direction.RIGHT:
         x += PACMAN_SPEED
         if x % 24 < 12:
-            img = sprites.pacman_open_right
+            img = PACMAN_OPEN_RIGHT
         else:
-            img = sprites.pacman_closed
+            img = PACMAN_CLOSED
     elif direction == Direction.LEFT:
         x -= PACMAN_SPEED
         if x % 24 < 12:
-            img = sprites.pacman_open_left
+            img = PACMAN_OPEN_LEFT
         else:
-            img = sprites.pacman_closed
+            img = PACMAN_CLOSED
     elif direction == Direction.UP:
         y -= PACMAN_SPEED
         if y % 24 < 12:
-            img = sprites.pacman_open_top
+            img = PACMAN_OPEN_UP
         else:
-            img = sprites.pacman_closed
+            img = PACMAN_CLOSED
     elif direction == Direction.DOWN:
         y += PACMAN_SPEED
         if y % 24 < 12:
-            img = sprites.pacman_open_bottom
+            img = PACMAN_OPEN_DOWN
         else:
-            img = sprites.pacman_closed
+            img = PACMAN_CLOSED
 
     pacman.update(img, (x, y))
 
@@ -233,4 +243,4 @@ def mouseclick(app: PacManApp, event):
         pacman.next_direction = direction
 
 
-app.run(fps=180)
+app.run()
