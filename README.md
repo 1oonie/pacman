@@ -15,9 +15,9 @@ Packages required by pacman are:
 
 ## TODO
 
-- [ ] Scoring
+- [x] Scoring
   - [x] Update title every time pacman eats a coin
-  - [x] Stop the game when pacman eats all the coins
+  - [x] ~~Stop the game when pacman eats all the coins~~
 - [ ] Ghosts
   - [ ] Implement pathfinding for ghosts to find the tile they want to head for
   - [ ] Only choose between paths that can be taken
@@ -27,6 +27,6 @@ Other stuff will get added to this list.
 
 ## Images
 
-![screen-recording](https://user-images.githubusercontent.com/71032999/123542324-02844100-d741-11eb-9579-f015e66fdac7.gif)
+![pacman_eating_coin](https://user-images.githubusercontent.com/71032999/123542324-02844100-d741-11eb-9579-f015e66fdac7.gif)
 
 
