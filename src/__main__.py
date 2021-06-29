@@ -152,9 +152,7 @@ def eat_coin(pacman: PacManSprite, b: TB) -> TB:
             return Tile.COIN not in flattened
 
         if check():
-            pacman.app.exit(0)
-            print("You won!")
-            sys.exit(0)
+            print("You won! Press esc to exit")
 
     return b
 
