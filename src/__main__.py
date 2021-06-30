@@ -124,6 +124,8 @@ def render_board(board: TB) -> None:
 
 
 def check_board(direction: Direction, pos: Tuple[int, int], board: TB) -> bool:
+    if not (pos[0] % 24 == 0 and pos[1] % 24 == 0):
+        return True
     if direction == Direction.RIGHT:
         return board[pos[1] // 24][pos[0] // 24 + 1] != Tile.WALL
     elif direction == Direction.LEFT:
