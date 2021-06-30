@@ -22,15 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import contextlib
-from typing import Callable, Tuple, Union
+from typing import Callable, Tuple
 
 from PIL import Image
 from PIL import ImageDraw
-
-with contextlib.redirect_stdout(None):
-    import pygame
-
 
 
 
@@ -40,6 +35,7 @@ def save_asset(func) -> Callable:
         ret = ret.resize((24, 24))
         ret.save("../assets/" + filename)
         return ret
+
     return deco
 
 
@@ -87,17 +83,26 @@ def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
 def _wall() -> Image.Image:
     im = Image.new("RGBA", (50, 50))
     draw = ImageDraw.Draw(im)
-    draw.rectangle([2, 2, 48, 48], outline=(
-        18, 50, 239), width=5, fill=(0, 0, 0))
+    draw.rectangle([2, 2, 48, 48], outline=(18, 50, 239), width=5, fill=(0, 0, 0))
     return im
 
 
 @save_asset
-def _coin(rotate: int = 45) -> Image.Image:
+def _coin() -> Image.Image:
     im = Image.new("RGBA", (50, 50), (0, 0, 0))
-    draw = ImageDraw.Draw(im)
-    draw.rectangle([21, 21, 29, 29], fill=(255, 251, 0))
-    im = im.rotate(rotate)
+    actual_coin = Image.new("RGBA", (50, 50), (0, 0, 0))
+    draw = ImageDraw.Draw(actual_coin)
+
+    draw.polygon([(25, 0), (30, 25), (20, 25)], fill=(255, 251, 0))
+    draw.polygon([(0, 25), (25, 30), (25, 20)], fill=(255, 251, 0))
+
+    draw.polygon([(25, 50), (20, 25), (30, 25)], fill=(255, 251, 0))
+    draw.polygon([(50, 25), (25, 20), (25, 30)], fill=(255, 251, 0))
+
+    actual_coin = actual_coin.resize((25, 25))
+
+    im.paste(actual_coin, (12, 12))
+
     return im
 
 
