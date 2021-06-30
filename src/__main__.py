@@ -41,11 +41,14 @@ PACMAN_SPEED = 2
 class PacManSprite(Sprite):
     current_direction: Direction = Direction.RIGHT
     next_direction: Direction = Direction.RIGHT
-    score: int
+    score: int = 0
 
 
 class PacManApp(Application):
     board: TB
+
+class GhostSprite(Sprite):
+    direction: Direction = Direction.NONE
 
 
 def load(file: str) -> pygame.Surface:
@@ -73,26 +76,26 @@ app = PacManApp(caption="PacMan", width=576, height=576, icon=PACMAN_OPEN_RIGHT)
 board = """\
 ------------------------
 -**********************-
--*--------------------*-
--*-******************-*-
--*-*----------------*-*-
--*-*-**************-*-*-
--*-*-*------------*-*-*-
--*-*-*-**********-*-*-*-
--*-*-*-*--------*-*-*-*-
--*-*-*-*-******-*-*-*-*-
--*-*-*-*-*----*-*-*-*-*-
--*-*-*-*-*-**-*-*-*-*-*-
--*-*-*-*-*-**-*-*-*-*-*-
--*-*-*-*-*--*-*-*-*-*-*-
--*-*-*-*-****-*-*-*-*-*-
--*-*-*-*------*-*-*-*-*-
--*-*-*-********-*-*-*-*-
--*-*-*----------*-*-*-*-
--*-*-************-*-*-*-
--*-*--------------*-*-*-
--*-****************-*-*-
--*------------------*-*-
+-*-----**------**-----*-
+-*-   -**-    -**-   -*-
+-*-   -**-    -**-   -*-
+-*-----**------**-----*-
+-**********************-
+---------******---------
+-**********************-
+-*--**********--***--**-
+-*--***--*****--*******-
+-******--*********--***-
+-**********--*****--***-
+-***--*****--**********-
+-***--**********--*****-
+-**********************-
+---------******---------
+-**********************-
+-*-----**------**-----*-
+-*-   -**-    -**-   -*-
+-*-   -**-    -**-   -*-
+-*-----**------**-----*-
 -**********************-
 ------------------------"""
 
@@ -175,7 +178,6 @@ def start(app: PacManApp) -> None:
     app.display.fill((0, 0, 0))
     render_board(app.board)
     pacman = PacManSprite(app.display, PACMAN_OPEN_RIGHT, (24, 24))
-    pacman.score = 0
     app.add_sprite(pacman, "pacman")
 
 
@@ -205,28 +207,19 @@ def update(app: PacManApp) -> None:
 
     if direction == Direction.RIGHT:
         x += PACMAN_SPEED
-        if x % 24 < 12:
-            img = PACMAN_OPEN_RIGHT
-        else:
-            img = PACMAN_CLOSED
+        img = PACMAN_OPEN_RIGHT
     elif direction == Direction.LEFT:
         x -= PACMAN_SPEED
-        if x % 24 < 12:
-            img = PACMAN_OPEN_LEFT
-        else:
-            img = PACMAN_CLOSED
+        img = PACMAN_OPEN_LEFT
     elif direction == Direction.UP:
         y -= PACMAN_SPEED
-        if y % 24 < 12:
-            img = PACMAN_OPEN_UP
-        else:
-            img = PACMAN_CLOSED
+        img = PACMAN_OPEN_UP
     elif direction == Direction.DOWN:
         y += PACMAN_SPEED
-        if y % 24 < 12:
-            img = PACMAN_OPEN_DOWN
-        else:
-            img = PACMAN_CLOSED
+        img = PACMAN_OPEN_DOWN
+
+    if x % 24 > 12 or y % 24 > 12:
+        img = PACMAN_CLOSED
 
     pacman.update(img, (x, y))
 

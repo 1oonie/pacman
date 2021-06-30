@@ -23,7 +23,7 @@ SOFTWARE.
 """
 from __future__ import annotations
 import contextlib
-from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, Tuple, Union
+from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, Tuple, Type, Union
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -37,7 +37,7 @@ class EventNotFound(Exception):
 
 
 class Application:
-    def __init__(self, *, caption: str, width: int, height: int, icon: pygame.Surface):
+    def __init__(self, *, caption: str, width: int, height: int, icon: pygame.Surface) -> None:
         pygame.init()  # pylint: disable=no-member
         self.width: int = width
         self.height: int = height
@@ -57,10 +57,6 @@ class Application:
         return "<Application width={0} height={1} caption={2}>".format(
             self.width, self.height, self.caption
         )
-
-    @property
-    def dimensions(self) -> Tuple[int, int]:
-        return (self.width, self.height)
 
     def send(self, type_: Any, event: Optional[pygame.event.EventType] = None) -> None:
         try:
@@ -93,7 +89,7 @@ class Application:
         pygame.quit()  # pylint: disable=no-member
         self.stopped = True
 
-    def run(self, *, fps: int = 60):
+    def run(self, *, fps: int = 60) -> None:
         self.send("start")
         pygame.display.update()
 
@@ -115,5 +111,5 @@ class Application:
         self.sprites[name] = sprite
 
     def get_sprite(self, name: str) -> Any:
-        res = self.sprites.get(name, None)
+        res = self.sprites[name]
         return res
