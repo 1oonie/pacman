@@ -23,7 +23,7 @@ SOFTWARE.
 """
 from __future__ import annotations
 import contextlib
-from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, Tuple, Type, Union
+from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, TypeVar, Union, Type
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -31,14 +31,18 @@ with contextlib.redirect_stdout(None):
 if TYPE_CHECKING:
     from sprite import Sprite
 
+    T = TypeVar("T", bound=Sprite)
+
 
 class EventNotFound(Exception):
     ...
 
 
 class Application:
-    def __init__(self, *, caption: str, width: int, height: int, icon: pygame.Surface) -> None:
-        pygame.init()  # pylint: disable=no-member
+    def __init__(
+        self, *, caption: str, width: int, height: int, icon: pygame.Surface
+    ) -> None:
+        pygame.init()
         self.width: int = width
         self.height: int = height
         self.caption: str = caption
@@ -48,7 +52,7 @@ class Application:
         pygame.display.set_caption(caption)
 
         self.events: Dict[Union[int, str], Callable] = dict()
-        self.sprites: Dict[str, Sprite] = dict()
+        self.sprites = dict()
 
         self.stopped: bool = False
         self.clock: pygame.time.Clock = pygame.time.Clock()
@@ -86,7 +90,7 @@ class Application:
     def exit(self, code: int = 0) -> None:
         if self.stopped:
             raise RuntimeError("the app has already stopped")
-        pygame.quit()  # pylint: disable=no-member
+        pygame.quit()
         self.stopped = True
 
     def run(self, *, fps: int = 60) -> None:
@@ -96,20 +100,19 @@ class Application:
         while not self.stopped:
             for event in pygame.event.get():
                 self.send(event.type, event)
-                if event.type == pygame.QUIT:  # pylint: disable=no-member
+                if event.type == pygame.QUIT:
                     self.stopped = True
 
             self.send("update")
             pygame.display.update()
             self.clock.tick(fps)
-            # print(self.clock.get_fps())
 
-        pygame.quit()  # pylint: disable=no-member
+        pygame.quit()
 
-    def add_sprite(self, sprite: Sprite, name: str) -> None:
+    def add_sprite(self, sprite: T, name: str) -> None:
         sprite.app = self
         self.sprites[name] = sprite
 
-    def get_sprite(self, name: str) -> Any:
+    def get_sprite(self, name: str) -> T:
         res = self.sprites[name]
         return res

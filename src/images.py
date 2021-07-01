@@ -28,7 +28,6 @@ from PIL import Image
 from PIL import ImageDraw
 
 
-
 def save_asset(func) -> Callable:
     def deco(*args, filename: str, **kwargs) -> Image.Image:
         ret = func(*args, **kwargs)
@@ -43,7 +42,7 @@ def save_asset(func) -> Callable:
 def _pacman_open(rotate: int = 0) -> Image.Image:
     im = Image.new("RGBA", (50, 50))
     draw = ImageDraw.Draw(im)
-    draw.pieslice([0, 0, 50, 50], 45, 360 - 45, (255, 251, 0))
+    draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 45, 360 - 45, (255, 251, 0))
     im = im.rotate(rotate)
     return im
 
@@ -60,8 +59,8 @@ def _pacman_closed() -> Image.Image:
 def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
     im = Image.new("RGBA", (50, 50))
     draw = ImageDraw.Draw(im)
-    draw.pieslice([0, 0, 50, 50], 180, 0, fill=colour)
-    draw.rectangle([0, 25, 50, 40], fill=colour)
+    draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 180, 0, fill=colour)
+    draw.rectangle((0.0, 25.0, 50.0, 40.0), fill=colour)
 
     for i in (10, 30):
         draw.ellipse([i, 15, i + 10, 25], fill=(255, 255, 255))
@@ -83,7 +82,9 @@ def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
 def _wall() -> Image.Image:
     im = Image.new("RGBA", (50, 50))
     draw = ImageDraw.Draw(im)
-    draw.rectangle([2, 2, 48, 48], outline=(18, 50, 239), width=5, fill=(0, 0, 0))
+    draw.rectangle(
+        (2.0, 2.0, 48.0, 48.0), outline=(18, 50, 239), width=5, fill=(0, 0, 0)
+    )
     return im
 
 
@@ -115,7 +116,6 @@ def _blank() -> Image.Image:
 if __name__ == "__main__":
     # automatically save all the images if we run the file
 
-    # pylint: disable=unexpected-keyword-arg
     _pacman_open(filename="pacman_open_right.png")
     _pacman_open(180, filename="pacman_open_left.png")
     _pacman_open(270, filename="pacman_open_down.png")
@@ -131,4 +131,3 @@ if __name__ == "__main__":
     _wall(filename="wall.png")
     _coin(filename="coin.png")
     _blank(filename="blank.png")
-    # pylint: enable

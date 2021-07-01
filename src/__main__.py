@@ -47,6 +47,7 @@ class PacManSprite(Sprite):
 class PacManApp(Application):
     board: TB
 
+
 class GhostSprite(Sprite):
     direction: Direction = Direction.NONE
 
