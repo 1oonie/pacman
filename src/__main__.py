@@ -42,6 +42,7 @@ class PacManSprite(Sprite):
     current_direction: Direction = Direction.RIGHT
     next_direction: Direction = Direction.RIGHT
     score: int = 0
+    won: bool = False
 
 
 class PacManApp(Application):
@@ -74,6 +75,8 @@ WALL = load("wall")
 
 
 app = PacManApp(caption="PacMan", width=576, height=600, icon=PACMAN_OPEN_RIGHT)
+font = pygame.font.SysFont("Font.ttf", 24)
+
 board = """\
 ------------------------
 -**********************-
@@ -149,7 +152,6 @@ def eat_coin(pacman: PacManSprite, b: TB) -> TB:
     current = b[y // 24][x // 24]
     if current == Tile.COIN:
         pacman.score += 1
-        pygame.display.set_caption("PacMan: " + str(pacman.score) + " points")
         b[y // 24][x // 24] = Tile.BLANK
 
         def check() -> bool:
@@ -158,7 +160,7 @@ def eat_coin(pacman: PacManSprite, b: TB) -> TB:
             return Tile.COIN not in flattened
 
         if check():
-            print("You won! Press esc to exit")
+            pacman.won = True
 
     return b
 
@@ -228,12 +230,16 @@ def update(app: PacManApp) -> None:
         img = PACMAN_CLOSED
 
     pacman.update(img, (x, y))
+    if pacman.won:
+        surf = font.render("You won!", False, (255, 255, 255))
+    else:
+        surf = font.render("Score: " + str(pacman.score), False, (255, 255, 255))
+    app.display.blit(surf, (5, 5))
 
 
 @app.on("keydown")
 def keydown(app: PacManApp, event: pygame.event.EventType):
     pacman: PacManSprite = app.get_sprite("pacman")
-    # pylint: disable=no-member
     if event.key == pygame.K_ESCAPE:
         app.exit(0)
 
@@ -243,7 +249,6 @@ def keydown(app: PacManApp, event: pygame.event.EventType):
         pygame.K_UP: Direction.UP,
         pygame.K_RIGHT: Direction.RIGHT,
     }
-    # pylint: enable
     direction = directions.get(event.key, None)
     if direction:
         pacman.next_direction = direction
