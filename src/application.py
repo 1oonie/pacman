@@ -23,6 +23,7 @@ SOFTWARE.
 """
 from __future__ import annotations
 import contextlib
+import traceback
 from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, TypeVar, Union, Type
 
 with contextlib.redirect_stdout(None):
@@ -92,20 +93,35 @@ class Application:
             raise RuntimeError("the app has already stopped")
         pygame.quit()
         self.stopped = True
+    
 
     def run(self, *, fps: int = 60) -> None:
         self.send("start")
         pygame.display.update()
 
-        while not self.stopped:
+        def handle_pygame_error(error) -> None:
+            if str(error) == "display Surface quit":
+                return
+            traceback.print_exception(type(error), error, error.__traceback__)
+
+        while True:
+            if self.stopped:
+                break
+
             for event in pygame.event.get():
-                self.send(event.type, event)
+                try:
+                    self.send(event.type, event)
+                except pygame.error as message:
+                    handle_pygame_error(message)
                 if event.type == pygame.QUIT:
                     self.stopped = True
-
-            self.send("update")
-            pygame.display.update()
-            self.clock.tick(fps)
+            try:
+                self.send("update")
+            except pygame.error as message:
+                handle_pygame_error(message)
+            else:
+                pygame.display.update()
+                self.clock.tick(fps)
 
         pygame.quit()
 

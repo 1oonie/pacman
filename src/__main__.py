@@ -73,7 +73,7 @@ COIN = load("coin")
 WALL = load("wall")
 
 
-app = PacManApp(caption="PacMan", width=576, height=576, icon=PACMAN_OPEN_RIGHT)
+app = PacManApp(caption="PacMan", width=576, height=600, icon=PACMAN_OPEN_RIGHT)
 board = """\
 ------------------------
 -**********************-
@@ -124,7 +124,7 @@ def render_board(board: TB) -> None:
                 img = BLANK
                 # remember, don't "continue" here cause
                 # it speeds up when the is no coin
-            app.display.blit(img, (n_item * 24, n_line * 24))
+            app.display.blit(img, (n_item * 24, n_line * 24 + 24))
 
 
 def check_board(direction: Direction, pos: Tuple[int, int], board: TB) -> bool:
@@ -143,12 +143,14 @@ def check_board(direction: Direction, pos: Tuple[int, int], board: TB) -> bool:
 
 
 def eat_coin(pacman: PacManSprite, b: TB) -> TB:
-    pos: Tuple[int, int] = pacman.position
-    current = b[pos[1] // 24][pos[0] // 24]
+    x, y = pacman.position
+    y -= 24
+
+    current = b[y // 24][x // 24]
     if current == Tile.COIN:
         pacman.score += 1
         pygame.display.set_caption("PacMan: " + str(pacman.score) + " points")
-        b[pos[1] // 24][pos[0] // 24] = Tile.BLANK
+        b[y // 24][x // 24] = Tile.BLANK
 
         def check() -> bool:
             nonlocal b
@@ -178,7 +180,7 @@ def start(app: PacManApp) -> None:
 
     app.display.fill((0, 0, 0))
     render_board(app.board)
-    pacman = PacManSprite(app.display, PACMAN_OPEN_RIGHT, (24, 24))
+    pacman = PacManSprite(app.display, PACMAN_OPEN_RIGHT, (24, 48))
     app.add_sprite(pacman, "pacman")
 
 
@@ -189,23 +191,26 @@ def update(app: PacManApp) -> None:
     pacman: PacManSprite = app.get_sprite("pacman")
     render_board(app.board)
 
-    if (pacman.x % 24 == 0 and pacman.y % 24 == 0) or isinverse(
+    x, y = pacman.position
+    y -= 24
+
+    if (x % 24 == 0 and y % 24 == 0) or isinverse(
         (pacman.current_direction, pacman.next_direction)
     ):
         direction = pacman.next_direction
-        if not check_board(pacman.next_direction, pacman.position, app.board):
+        if not check_board(pacman.next_direction, (x, y), app.board):
             direction = pacman.current_direction
-        if not check_board(pacman.current_direction, pacman.position, app.board):
+        if not check_board(pacman.current_direction, (x, y), app.board):
             direction = Direction.NONE
         pacman.current_direction = direction
-        if pacman.x % 24 == 0 and pacman.y % 24 == 0:
+        if x % 24 == 0 and y % 24 == 0:
             app.board = eat_coin(pacman, app.board)
     else:
         direction = pacman.current_direction
 
-    x, y = pacman.x, pacman.y
     img = pacman.image
 
+    y += 24
     if direction == Direction.RIGHT:
         x += PACMAN_SPEED
         img = PACMAN_OPEN_RIGHT
