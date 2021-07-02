@@ -17,17 +17,24 @@ def save_asset(func) -> Callable:
 @save_asset
 def _pacman_open(rotate: int = 0) -> Image.Image:
     im = Image.new("RGBA", (50, 50))
-    draw = ImageDraw.Draw(im)
+    actual_pacman = Image.new("RGBA", (50, 50))
+    draw = ImageDraw.Draw(actual_pacman)
     draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 45, 360 - 45, (255, 251, 0))
-    im = im.rotate(rotate)
+    actual_pacman = actual_pacman.rotate(rotate)
+    
+    actual_pacman = actual_pacman.resize((40, 40))
+    im.paste(actual_pacman, (5, 5))
     return im
 
 
 @save_asset
 def _pacman_closed() -> Image.Image:
     im = Image.new("RGBA", (50, 50))
-    draw = ImageDraw.Draw(im)
+    actual_pacman = Image.new("RGBA", (50, 50))
+    draw = ImageDraw.Draw(actual_pacman)
     draw.ellipse([0, 0, 50, 50], fill=(255, 251, 0))
+    actual_pacman = actual_pacman.resize((40, 40))
+    im.paste(actual_pacman, (5, 5))
     return im
 
 
@@ -70,11 +77,11 @@ def _coin() -> Image.Image:
     actual_coin = Image.new("RGBA", (50, 50), (0, 0, 0))
     draw = ImageDraw.Draw(actual_coin)
 
-    draw.polygon([(25, 0), (30, 25), (20, 25)], fill=(255, 251, 0))
-    draw.polygon([(0, 25), (25, 30), (25, 20)], fill=(255, 251, 0))
+    draw.polygon([(25, 0), (30, 25), (20, 25)], fill=(255, 255, 255))
+    draw.polygon([(0, 25), (25, 30), (25, 20)], fill=(255, 255, 255))
 
-    draw.polygon([(25, 50), (20, 25), (30, 25)], fill=(255, 251, 0))
-    draw.polygon([(50, 25), (25, 20), (25, 30)], fill=(255, 251, 0))
+    draw.polygon([(25, 50), (20, 25), (30, 25)], fill=(255, 255, 255))
+    draw.polygon([(50, 25), (25, 20), (25, 30)], fill=(255, 255, 255))
 
     actual_coin = actual_coin.resize((25, 25))
 
