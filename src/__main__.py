@@ -56,17 +56,16 @@ def open_board() -> str:
     try:
         board = input("What level do you want to play? ")
         with open("../levels/" + board + ".board") as f:
-            board = f.read()
+            board_data = f.read()
+            return board_data
     except FileNotFoundError:
         print("The board '" + board + "' does not exist!")
         print("Possible boards are: " + ", ".join(b[:-6] for b in os.listdir("../levels/")), end="\n\n")
-        open_board()
+        return open_board()
     except KeyboardInterrupt:
         sys.exit(0)
-    else:
-        return board
 
-board= open_board()
+board = open_board()
 
 app = PacManApp(caption="PacMan", width=576, height=600, icon=PACMAN_OPEN_RIGHT)
 font = pygame.font.SysFont("Font.ttf", 24)
