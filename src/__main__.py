@@ -1,5 +1,6 @@
 import contextlib
 import sys
+import os
 from typing import List, Tuple
 
 from application import Application
@@ -15,8 +16,8 @@ PACMAN_SPEED = 2
 
 
 class PacManSprite(Sprite):
-    current_direction: Direction = Direction.RIGHT
-    next_direction: Direction = Direction.RIGHT
+    current_direction: Direction = Direction.NONE
+    next_direction: Direction = Direction.NONE
     score: int = 0
     won: bool = False
 
@@ -50,9 +51,21 @@ COIN = load("coin")
 WALL = load("wall")
 
 
-board = input("What level do you want to play? ")
-with open("../levels/" + board + ".board") as f:
-    board = f.read()
+def open_board():
+    try:
+        board = input("What level do you want to play? ")
+        with open("../levels/" + board + ".board") as f:
+            board = f.read()
+    except FileNotFoundError:
+        print("The board '" + board + "' does not exist!")
+        print("Possible boards are: " + ", ".join(b[:-6] for b in os.listdir("../levels/")), end="\n\n")
+        open_board()
+    except KeyboardInterrupt:
+        sys.exit(0)
+    else:
+        return board
+
+board= open_board()
 
 app = PacManApp(caption="PacMan", width=576, height=600, icon=PACMAN_OPEN_RIGHT)
 font = pygame.font.SysFont("Font.ttf", 24)
