@@ -83,9 +83,9 @@ def _coin() -> Image.Image:
     draw.polygon([(25, 50), (20, 25), (30, 25)], fill=(255, 255, 255))
     draw.polygon([(50, 25), (25, 20), (25, 30)], fill=(255, 255, 255))
 
-    actual_coin = actual_coin.resize((25, 25))
+    actual_coin = actual_coin.resize((20, 20))
 
-    im.paste(actual_coin, (12, 12))
+    im.paste(actual_coin, (15, 15))
 
     return im
 
