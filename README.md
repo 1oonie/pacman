@@ -27,6 +27,6 @@ Other stuff will get added to this list.
 
 ## Images
 
-![pacman_eating_coin](https://user-images.githubusercontent.com/71032999/123542324-02844100-d741-11eb-9579-f015e66fdac7.gif)
+![image](https://user-images.githubusercontent.com/71032999/124267761-99317300-db30-11eb-8ecd-658c23954478.png)
 
 
