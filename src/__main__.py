@@ -1,7 +1,7 @@
 import contextlib
 import sys
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Optional, Union
 
 from application import Application
 from enums import Direction, Tile
@@ -51,7 +51,8 @@ COIN = load("coin")
 WALL = load("wall")
 
 
-def open_board():
+def open_board() -> str:
+    board = str()
     try:
         board = input("What level do you want to play? ")
         with open("../levels/" + board + ".board") as f:
