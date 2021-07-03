@@ -6,7 +6,6 @@ with contextlib.redirect_stdout(None):
     import pygame
 
 
-
 class Sprite:
     def __init__(
         self, app, display: pygame.Surface, image: pygame.Surface, pos: Tuple[int, int]

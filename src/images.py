@@ -21,7 +21,7 @@ def _pacman_open(rotate: int = 0) -> Image.Image:
     draw = ImageDraw.Draw(actual_pacman)
     draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 45, 360 - 45, (255, 251, 0))
     actual_pacman = actual_pacman.rotate(rotate)
-    
+
     actual_pacman = actual_pacman.resize((40, 40))
     im.paste(actual_pacman, (5, 5))
     return im

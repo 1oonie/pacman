@@ -15,6 +15,7 @@ from enums import Tile
 
 TB = List[List[Tile]]
 
+
 class EventNotFound(Exception):
     ...
 
@@ -74,7 +75,6 @@ class Application:
             raise RuntimeError("the app has already stopped")
         pygame.quit()
         self.stopped = True
-    
 
     def run(self, *, fps: int = 60) -> None:
         self.send("start")

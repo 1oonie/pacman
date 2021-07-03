@@ -20,6 +20,7 @@ class Direction(Enum):
     DOWN = 4
     NONE = 5
 
+
 class GhostMode(Enum):
     CHASE = 0
     SCATTER = 1

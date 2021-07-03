@@ -14,6 +14,7 @@ with contextlib.redirect_stdout(None):
 
 TB = List[List[Tile]]
 
+
 def load(file: str) -> pygame.Surface:
     path = "../assets/" + file + ".png"
     return pygame.image.load(path)
@@ -35,14 +36,20 @@ def open_board() -> str:
             return board_data
     except FileNotFoundError:
         print("The board '" + board + "' does not exist!")
-        print("Possible boards are: " + ", ".join(b[:-6] for b in os.listdir("../levels/")), end="\n\n")
+        print(
+            "Possible boards are: "
+            + ", ".join(b[:-6] for b in os.listdir("../levels/")),
+            end="\n\n",
+        )
         return open_board()
     except KeyboardInterrupt:
         sys.exit(0)
 
+
 board = open_board()
 
 app = Application(caption="PacMan", width=576, height=600, icon=PACMAN_OPEN_RIGHT)
+
 
 def parse_board(board: str) -> TB:
     tiles_dict = {"-": Tile.WALL, "*": Tile.COIN, " ": Tile.BLANK}
@@ -87,6 +94,7 @@ def update(app) -> None:
     for sprite in app.sprites:
         app.sprites[sprite].update()
 
+
 @app.on("keydown")
 def keydown(app, event: pygame.event.EventType):
     pacman: PacmanSprite = app.get_sprite("pacman")
@@ -102,7 +110,6 @@ def keydown(app, event: pygame.event.EventType):
     direction = directions.get(event.key, None)
     if direction:
         pacman.next_direction = direction
-
 
 
 app.run()

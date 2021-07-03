@@ -12,6 +12,8 @@ PACMAN_SPEED = 2
 
 pygame.font.init()
 font = pygame.font.SysFont("Font.ttf", 24)
+bigfont = pygame.font.SysFont("Font.ttf", 72)
+
 
 def load(file: str) -> pygame.Surface:
     path = "../assets/" + file + ".png"
@@ -24,16 +26,20 @@ PACMAN_OPEN_DOWN = load("pacman_open_down")
 PACMAN_OPEN_UP = load("pacman_open_up")
 PACMAN_CLOSED = load("pacman_closed")
 
+
 class PacmanSprite(Sprite):
     def __init__(self, app):
         self.current_direction: Direction = Direction.NONE
         self.next_direction: Direction = Direction.NONE
         self.score: int = 0
         self.won: bool = False
+        self.dead = False
 
         super().__init__(app, app.display, PACMAN_OPEN_RIGHT, (24, 48))
 
-    def check_board(self, direction: Direction, pos: Tuple[int, int], board: TB) -> bool:
+    def check_board(
+        self, direction: Direction, pos: Tuple[int, int], board: TB
+    ) -> bool:
         if not (pos[0] % 24 == 0 and pos[1] % 24 == 0):
             return True
         if direction == Direction.RIGHT:
@@ -46,7 +52,6 @@ class PacmanSprite(Sprite):
             return board[pos[1] // 24 - 1][pos[0] // 24] != Tile.WALL
         elif direction == Direction.NONE:
             return True
-
 
     def eat_coin(self, b: TB) -> TB:
         x, y = self.position
@@ -67,7 +72,6 @@ class PacmanSprite(Sprite):
 
         return b
 
-
     def isinverse(self, directions: Tuple[Direction, Direction]) -> bool:
         inverse_dict = {
             Direction.RIGHT: Direction.LEFT,
@@ -80,6 +84,26 @@ class PacmanSprite(Sprite):
 
     def update(self) -> None:
 
+        for sprite in self.app.sprites:
+            if sprite == "pacman":
+                continue
+            gx, gy = self.app.sprites[sprite].position
+            px, py = self.position
+            if (px == gx or px == gx + gx % 2 or px == gx - gx % 2) and (
+                py == gy or py == gy + gy % 2 or py == gy - gy % 2
+            ):
+                # collision detection 👍
+                self.dead = True
+
+        if self.dead or self.won:
+            surf = font.render("Score: " + str(self.score), False, (255, 255, 255))
+            self.app.display.blit(surf, (5, 5))
+
+            text = "You win!" if self.won else "You ded!"
+            colour = (255, 255, 255) if self.won else (255, 0, 0)
+            surf = bigfont.render(text, False, colour)
+            self.app.display.blit(surf, (185, 200))
+            return
 
         x, y = self.position
         y -= 24
