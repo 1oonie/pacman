@@ -1,7 +1,7 @@
 from __future__ import annotations
 import contextlib
 import traceback
-from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, TypeVar, Union, Type
+from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, TypeVar, Union, List
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -11,6 +11,9 @@ if TYPE_CHECKING:
 
     T = TypeVar("T", bound=Sprite)
 
+from enums import Tile
+
+TB = List[List[Tile]]
 
 class EventNotFound(Exception):
     ...
@@ -34,6 +37,7 @@ class Application:
 
         self.stopped: bool = False
         self.clock: pygame.time.Clock = pygame.time.Clock()
+        self.board: TB
 
     def __repr__(self) -> str:
         return "<Application width={0} height={1} caption={2}>".format(

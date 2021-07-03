@@ -10,6 +10,7 @@ class Tile(Enum):
     BLANK = 0
     COIN = 1
     WALL = 2
+    POWER_PELLET = 3
 
 
 class Direction(Enum):
@@ -18,3 +19,7 @@ class Direction(Enum):
     UP = 3
     DOWN = 4
     NONE = 5
+
+class GhostMode(Enum):
+    CHASE = 0
+    SCATTER = 1

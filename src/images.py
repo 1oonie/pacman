@@ -74,18 +74,10 @@ def _wall() -> Image.Image:
 @save_asset
 def _coin() -> Image.Image:
     im = Image.new("RGBA", (50, 50), (0, 0, 0))
-    actual_coin = Image.new("RGBA", (50, 50), (0, 0, 0))
-    draw = ImageDraw.Draw(actual_coin)
+    draw = ImageDraw.Draw(im)
 
-    draw.polygon([(25, 0), (30, 25), (20, 25)], fill=(255, 255, 255))
-    draw.polygon([(0, 25), (25, 30), (25, 20)], fill=(255, 255, 255))
-
-    draw.polygon([(25, 50), (20, 25), (30, 25)], fill=(255, 255, 255))
-    draw.polygon([(50, 25), (25, 20), (25, 30)], fill=(255, 255, 255))
-
-    actual_coin = actual_coin.resize((20, 20))
-
-    im.paste(actual_coin, (15, 15))
+    draw.rectangle((21.0, 21.0, 29.0, 29.0), fill=(255, 255, 255))
+    im = im.rotate(45)
 
     return im
 
