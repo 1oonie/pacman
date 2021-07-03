@@ -32,6 +32,4 @@ Other stuff will get added to this list.
 
 ## Images
 
-![image](https://user-images.githubusercontent.com/71032999/124267761-99317300-db30-11eb-8ecd-658c23954478.png)
-
-
+![image](https://user-images.githubusercontent.com/71032999/124361404-fc053600-dc26-11eb-9c0d-d1b859e478ef.png)
