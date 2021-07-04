@@ -41,7 +41,8 @@ def _pacman_closed() -> Image.Image:
 @save_asset
 def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
     im = Image.new("RGBA", (50, 50))
-    draw = ImageDraw.Draw(im)
+    actual_ghost = Image.new("RGBA", (50, 50))
+    draw = ImageDraw.Draw(actual_ghost)
     draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 180, 0, fill=colour)
     draw.rectangle((0.0, 25.0, 50.0, 40.0), fill=colour)
 
@@ -57,7 +58,8 @@ def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
         ]
         # maths which spits out a triangle
         draw.polygon(points, fill=colour)
-
+    actual_ghost = actual_ghost.resize((45, 45))
+    im.paste(actual_ghost, (3, 2))
     return im
 
 

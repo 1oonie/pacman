@@ -35,7 +35,7 @@ class PacmanSprite(Sprite):
         self.won: bool = False
         self.dead = False
 
-        super().__init__(app, app.display, PACMAN_OPEN_RIGHT, (24, 240))
+        super().__init__(app, app.display, PACMAN_OPEN_RIGHT, (24*12, 24*12 + 24))
 
     def check_board(
         self, direction: Direction, pos: Tuple[int, int], board: TB
@@ -96,12 +96,12 @@ class PacmanSprite(Sprite):
                 self.dead = True
 
         if self.dead or self.won:
-            surf = font.render("Score: " + str(self.score), False, (255, 255, 255))
+            surf = font.render("Score: " + str(self.score), True, (255, 255, 255))
             self.app.display.blit(surf, (5, 5))
 
             text = "You win!" if self.won else "You ded!"
             colour = (255, 255, 255) if self.won else (255, 0, 0)
-            surf = bigfont.render(text, False, colour)
+            surf = bigfont.render(text, True, colour)
             self.app.display.blit(surf, (185, 200))
             return
 
@@ -143,5 +143,5 @@ class PacmanSprite(Sprite):
             img = PACMAN_CLOSED
 
         super().update(img, (x, y))
-        surf = font.render("Score: " + str(self.score), False, (255, 255, 255))
+        surf = font.render("Score: " + str(self.score), True, (255, 255, 255))
         self.app.display.blit(surf, (5, 5))
