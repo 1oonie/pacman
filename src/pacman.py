@@ -116,8 +116,8 @@ class PacmanSprite(Sprite):
                 direction = self.current_direction
             if not self.check_board(self.current_direction, (x, y), self.app.board):
                 direction = Direction.NONE
-            else:
-                self.current_direction = direction
+                
+            self.current_direction = direction
             if x % 24 == 0 and y % 24 == 0:
                 self.app.board = self.eat_coin(self.app.board)
         else:
@@ -143,8 +143,5 @@ class PacmanSprite(Sprite):
             img = PACMAN_CLOSED
 
         super().update(img, (x, y))
-        if self.won:
-            surf = font.render("You won!", False, (255, 255, 255))
-        else:
-            surf = font.render("Score: " + str(self.score), False, (255, 255, 255))
+        surf = font.render("Score: " + str(self.score), False, (255, 255, 255))
         self.app.display.blit(surf, (5, 5))

@@ -108,6 +108,7 @@ class Blinky(Ghost):
         else:
             return (552, 48)
 
+
 class Pinky(Ghost):
     def __init__(self, app):
         super().__init__(app, app.display, GHOST_PINK, (24, 48))
@@ -127,8 +128,7 @@ class Pinky(Ghost):
             py -= 4
         elif direction == Direction.DOWN:
             py += 4
-
         if self.mode == GhostMode.CHASE:
-            return px*24, py*24
+            return px * 24, py * 24
         else:
             return 24, 48
