@@ -38,7 +38,6 @@ class Ghost(Sprite):
             Direction.NONE: Direction.NONE,
         }
         directions = [Direction.UP, Direction.DOWN, Direction.RIGHT, Direction.LEFT]
-        directions.remove(inverse_dict[self.current_direction])
         if self.app.board[y // 24 - 1][x // 24] == Tile.WALL:
             directions.remove(Direction.UP)
         if self.app.board[y // 24 + 1][x // 24] == Tile.WALL:
@@ -47,6 +46,10 @@ class Ghost(Sprite):
             directions.remove(Direction.RIGHT)
         if self.app.board[y // 24][x // 24 - 1] == Tile.WALL:
             directions.remove(Direction.LEFT)
+        try:
+            directions.remove(inverse_dict[self.current_direction])
+        except ValueError:
+            pass
 
         return directions
 
@@ -104,3 +107,28 @@ class Blinky(Ghost):
             return pacman.position
         else:
             return (552, 48)
+
+class Pinky(Ghost):
+    def __init__(self, app):
+        super().__init__(app, app.display, GHOST_PINK, (24, 48))
+
+    def find_target(self):
+        pacman = self.app.get_sprite("pacman")
+        px, py = pacman.position
+        py -= 24
+
+        px, py = px // 24, py // 24
+        direction = pacman.current_direction
+        if direction == Direction.RIGHT:
+            px += 4
+        elif direction == Direction.LEFT:
+            px -= 4
+        elif direction == Direction.UP:
+            py -= 4
+        elif direction == Direction.DOWN:
+            py += 4
+
+        if self.mode == GhostMode.CHASE:
+            return px*24, py*24
+        else:
+            return 24, 48

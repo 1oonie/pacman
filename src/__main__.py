@@ -6,7 +6,7 @@ from typing import List, Tuple
 from application import Application
 from enums import Direction, Tile
 from pacman import PacmanSprite
-from ghost import Blinky
+from ghost import Blinky, Pinky
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -85,6 +85,7 @@ def start(app) -> None:
     render_board(app.board)
     app.add_sprite(PacmanSprite(app), "pacman")
     app.add_sprite(Blinky(app), "blinky")
+    app.add_sprite(Pinky(app), "pinky")
 
 
 @app.on("update")

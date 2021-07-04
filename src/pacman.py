@@ -35,7 +35,7 @@ class PacmanSprite(Sprite):
         self.won: bool = False
         self.dead = False
 
-        super().__init__(app, app.display, PACMAN_OPEN_RIGHT, (24, 48))
+        super().__init__(app, app.display, PACMAN_OPEN_RIGHT, (24, 240))
 
     def check_board(
         self, direction: Direction, pos: Tuple[int, int], board: TB
