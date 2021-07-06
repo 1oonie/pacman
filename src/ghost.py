@@ -14,6 +14,8 @@ def load(file: str) -> pygame.Surface:
 
 GHOST_RED = load("ghost_red")
 GHOST_PINK = load("ghost_pink")
+GHOST_ORANGE = load("ghost_orange")
+GHOST_BLUE = load("ghost_blue")
 
 GHOST_SPEED = 1
 
@@ -132,3 +134,56 @@ class Pinky(Ghost):
             return px * 24, py * 24
         else:
             return 24, 48
+
+
+class Clyde(Ghost):
+    def __init__(self, app):
+        super().__init__(app, app.display, GHOST_ORANGE, (24, 600 - 48))
+
+    def find_target(self):
+        pacman = self.app.get_sprite("pacman")
+        px, py = pacman.position
+        py -= 24
+
+        px, py = px // 24, py // 24
+
+        x, y = self.position
+        x, y = x // 24, y // 24
+
+        if max(x, px) - min(x, px) <= 8 and max(y, py) - min(y, py) <= 8:
+            return pacman.position
+        else:
+            return 24, 600 - 48
+
+
+class Inky(Ghost):
+    def __init__(self, app):
+        super().__init__(app, app.display, GHOST_BLUE, (552 - 24, 600 - 48))
+
+    def find_target(self):
+        pacman = self.app.get_sprite("pacman")
+        px, py = pacman.position
+        py -= 24
+
+        direction = pacman.current_direction
+        if direction == Direction.RIGHT:
+            px += 48
+        elif direction == Direction.LEFT:
+            px -= 48
+        elif direction == Direction.UP:
+            py -= 48
+        elif direction == Direction.DOWN:
+            py += 48
+
+        blinky = self.app.get_sprite("blinky")
+        bx, by = blinky.position
+        by -= 24
+
+        return px + (px - bx), py + (py - by)
+
+
+def add_ghosts(app):
+    app.add_sprite(Blinky(app), "blinky")
+    app.add_sprite(Pinky(app), "pinky")
+    app.add_sprite(Clyde(app), "clyde")
+    app.add_sprite(Inky(app), "inky")

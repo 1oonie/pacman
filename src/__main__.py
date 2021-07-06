@@ -6,7 +6,7 @@ from typing import List, Tuple
 from application import Application
 from enums import Direction, Tile
 from pacman import PacmanSprite
-from ghost import Blinky, Pinky
+from ghost import add_ghosts
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -36,16 +36,15 @@ def open_board() -> str:
             return board_data
     except FileNotFoundError:
         print("The board '" + board + "' does not exist!")
-        print(
-            "Possible boards are: "
-            + ", ".join(b[:-6] for b in os.listdir("../levels/")),
-            end="\n\n",
-        )
         return open_board()
     except KeyboardInterrupt:
         sys.exit(0)
 
 
+print(
+    "Possible boards are: " + ", ".join(b[:-6] for b in os.listdir("../levels/")),
+    end="\n\n",
+)
 board = open_board()
 
 app = Application(caption="PacMan", width=576, height=600, icon=PACMAN_OPEN_RIGHT)
@@ -84,8 +83,7 @@ def start(app) -> None:
     app.display.fill((0, 0, 0))
     render_board(app.board)
     app.add_sprite(PacmanSprite(app), "pacman")
-    app.add_sprite(Blinky(app), "blinky")
-    app.add_sprite(Pinky(app), "pinky")
+    add_ghosts(app)
 
 
 @app.on("update")

@@ -35,7 +35,7 @@ class PacmanSprite(Sprite):
         self.won: bool = False
         self.dead = False
 
-        super().__init__(app, app.display, PACMAN_OPEN_RIGHT, (24*12, 24*12 + 24))
+        super().__init__(app, app.display, PACMAN_OPEN_RIGHT, (24 * 12, 24 * 12 + 24))
 
     def check_board(
         self, direction: Direction, pos: Tuple[int, int], board: TB
@@ -116,7 +116,7 @@ class PacmanSprite(Sprite):
                 direction = self.current_direction
             if not self.check_board(self.current_direction, (x, y), self.app.board):
                 direction = Direction.NONE
-                
+
             self.current_direction = direction
             if x % 24 == 0 and y % 24 == 0:
                 self.app.board = self.eat_coin(self.app.board)
