@@ -34,6 +34,7 @@ class PacmanSprite(Sprite):
         self.score: int = 0
         self.won: bool = False
         self.dead = False
+        self.lives = 3
 
         super().__init__(app, app.display, PACMAN_OPEN_RIGHT, (24 * 12, 24 * 12 + 24))
 
@@ -82,6 +83,14 @@ class PacmanSprite(Sprite):
         }
         return inverse_dict[directions[0]] == directions[1]
 
+    def render(self, img, pos):
+        x, y = pos
+        super().update(img, (x, y))
+        for i in range(self.lives):
+            self.app.display.blit(PACMAN_OPEN_RIGHT, ((576-i*24) - 24, 0))
+        surf = font.render("Score: " + str(self.score), True, (255, 255, 255))
+        self.app.display.blit(surf, (5, 5))
+
     def update(self) -> None:
 
         for sprite in self.app.sprites:
@@ -93,7 +102,10 @@ class PacmanSprite(Sprite):
                 py == gy or py == gy + gy % 2 or py == gy - gy % 2
             ):
                 # collision detection 👍
-                self.dead = True
+                self.lives -= 1
+                if self.lives <= 0:
+                    self.dead = True
+                self.render(PACMAN_OPEN_RIGHT, (24 * 12, 24 * 12 + 24))
 
         if self.dead or self.won:
             surf = font.render("Score: " + str(self.score), True, (255, 255, 255))
@@ -142,6 +154,4 @@ class PacmanSprite(Sprite):
         if x % 24 > 12 or y % 24 > 12:
             img = PACMAN_CLOSED
 
-        super().update(img, (x, y))
-        surf = font.render("Score: " + str(self.score), True, (255, 255, 255))
-        self.app.display.blit(surf, (5, 5))
+        self.render(img, (x, y))
