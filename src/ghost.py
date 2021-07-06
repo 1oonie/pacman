@@ -18,13 +18,22 @@ GHOST_ORANGE = load("ghost_orange")
 GHOST_BLUE = load("ghost_blue")
 
 GHOST_SPEED = 1
+INVERSES = {
+    Direction.RIGHT: Direction.LEFT,
+    Direction.LEFT: Direction.RIGHT,
+    Direction.UP: Direction.DOWN,
+    Direction.DOWN: Direction.UP,
+    Direction.NONE: Direction.NONE,
+}
+DIRECTIONS = [Direction.UP, Direction.DOWN, Direction.RIGHT, Direction.LEFT]
 
 
 class Ghost(Sprite):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, app, display, image, position):
         self.current_direction: Direction = Direction.RIGHT
+        self.starting_position = position
         self.mode: GhostMode = GhostMode.CHASE
-        super().__init__(*args, **kwargs)
+        super().__init__(app, display, image, position)
 
     def find_target(self):
         raise NotImplementedError
@@ -32,14 +41,7 @@ class Ghost(Sprite):
     def filter_directions(self):
         x, y = self.position
         y -= 24
-        inverse_dict = {
-            Direction.RIGHT: Direction.LEFT,
-            Direction.LEFT: Direction.RIGHT,
-            Direction.UP: Direction.DOWN,
-            Direction.DOWN: Direction.UP,
-            Direction.NONE: Direction.NONE,
-        }
-        directions = [Direction.UP, Direction.DOWN, Direction.RIGHT, Direction.LEFT]
+        directions = set(DIRECTIONS)
         if self.app.board[y // 24 - 1][x // 24] == Tile.WALL:
             directions.remove(Direction.UP)
         if self.app.board[y // 24 + 1][x // 24] == Tile.WALL:
@@ -49,8 +51,8 @@ class Ghost(Sprite):
         if self.app.board[y // 24][x // 24 - 1] == Tile.WALL:
             directions.remove(Direction.LEFT)
         try:
-            directions.remove(inverse_dict[self.current_direction])
-        except ValueError:
+            directions.remove(INVERSES[self.current_direction])
+        except KeyError:
             pass
 
         return directions

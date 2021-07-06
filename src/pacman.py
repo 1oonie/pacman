@@ -92,6 +92,17 @@ class PacmanSprite(Sprite):
         self.app.display.blit(surf, (5, 5))
 
     def update(self) -> None:
+        
+        if self.dead or self.won:
+            surf = font.render("Score: " + str(self.score), True, (255, 255, 255))
+            self.app.display.blit(surf, (5, 5))
+
+            text = "You win!" if self.won else "You ded!"
+            colour = (255, 255, 255) if self.won else (255, 0, 0)
+            surf = bigfont.render(text, True, colour)
+            self.app.display.blit(surf, (185, 200))
+            return
+        
 
         for sprite in self.app.sprites:
             if sprite == "pacman":
@@ -103,19 +114,15 @@ class PacmanSprite(Sprite):
             ):
                 # collision detection 👍
                 self.lives -= 1
+                self.score -= 500
                 if self.lives <= 0:
                     self.dead = True
                 self.render(PACMAN_OPEN_RIGHT, (24 * 12, 24 * 12 + 24))
 
-        if self.dead or self.won:
-            surf = font.render("Score: " + str(self.score), True, (255, 255, 255))
-            self.app.display.blit(surf, (5, 5))
-
-            text = "You win!" if self.won else "You ded!"
-            colour = (255, 255, 255) if self.won else (255, 0, 0)
-            surf = bigfont.render(text, True, colour)
-            self.app.display.blit(surf, (185, 200))
-            return
+                for sprite in self.app.sprites:
+                    if sprite == "pacman":
+                        continue
+                    self.app.sprites[sprite]._position = self.app.sprites[sprite].starting_position
 
         x, y = self.position
         y -= 24
