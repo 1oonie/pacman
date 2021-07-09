@@ -153,9 +153,9 @@ class Clyde(Ghost):
         x, y = x // 24, y // 24
 
         if max(x, px) - min(x, px) <= 8 and max(y, py) - min(y, py) <= 8:
-            return pacman.position
-        else:
             return 24, 600 - 48
+        else:
+            return pacman.position
 
 
 class Inky(Ghost):

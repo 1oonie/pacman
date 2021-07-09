@@ -62,6 +62,32 @@ def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
     im.paste(actual_ghost, (3, 2))
     return im
 
+"""
+@save_asset
+def _scared_ghost(colour: Tuple[int, int, int]) -> Image.Image:
+    im = Image.new("RGBA", (50, 50))
+    actual_ghost = Image.new("RGBA", (50, 50))
+    draw = ImageDraw.Draw(actual_ghost)
+    draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 180, 0, fill=colour)
+    draw.rectangle((0.0, 25.0, 50.0, 40.0), fill=colour)
+
+    for i in (10, 30):
+        draw.ellipse([i, 15, i + 10, 25], fill=(255, 255, 255))
+        draw.ellipse([i + 2, 17, i + 8, 23], fill=(0, 72, 255))
+
+    for i in range(1, 4):
+        points = [
+            (i * (50 / 3) - 50 / 3, 40),
+            (i * (50 / 3), 40),
+            (i * (50 / 3) - 50 / 3 / 2, 50),
+        ]
+        # maths which spits out a triangle
+        draw.polygon(points, fill=colour)
+    actual_ghost = actual_ghost.resize((45, 45))
+    im.paste(actual_ghost, (3, 2))
+    return im
+"""
+
 
 @save_asset
 def _wall() -> Image.Image:
@@ -89,6 +115,13 @@ def _blank() -> Image.Image:
     im = Image.new("RGBA", (50, 50), (0, 0, 0))
     return im
 
+@save_asset
+def _power_pellet() -> Image.Image:
+    im = Image.new("RGBA", (50, 50), (0, 0, 0))
+    draw = ImageDraw.draw(im)
+
+    draw.ellipse([15, 15, 35, 35], fill=(255, 255, 255))
+
 
 if __name__ == "__main__":
     # automatically save all the images if we run the file
@@ -108,3 +141,4 @@ if __name__ == "__main__":
     _wall(filename="wall.png")
     _coin(filename="coin.png")
     _blank(filename="blank.png")
+    _power_pellet(filename="power_pellet.png")
