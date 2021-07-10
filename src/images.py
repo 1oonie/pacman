@@ -137,7 +137,7 @@ def _power_pellet() -> Image.Image:
     draw = ImageDraw.Draw(coin)
     draw.ellipse([0, 0, 20, 20], fill=(255, 255, 255))
 
-    im.paste(coin, (10, 10))
+    im.paste(coin, (15, 15))
 
     return im
 
