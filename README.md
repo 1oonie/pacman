@@ -27,12 +27,12 @@ Packages required by pacman are:
     - [x] Inky
     - [x] Clyde
 - [x] Fix the coins to make them better somehow
-- [ ] Make the wall look better
+- [x] Make the wall look better
 - [ ] Power pellets
   - [ ] "Frightened" ghost sprite
   - [ ] Pacman gets faster in this state
   - [ ] Eating ghosts
-  - [ ] Power pellet sprite/tile
+  - [x] Power pellet sprite/tile
 
  
 Other stuff will get added to this list.
