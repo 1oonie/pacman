@@ -19,7 +19,7 @@ def _pacman_open(rotate: int = 0) -> Image.Image:
     im = Image.new("RGBA", (50, 50))
     actual_pacman = Image.new("RGBA", (50, 50))
     draw = ImageDraw.Draw(actual_pacman)
-    draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 45, 360 - 45, (255, 251, 0))
+    draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 45, 360 - 45, fill=(255, 251, 0))
     actual_pacman = actual_pacman.rotate(rotate)
 
     actual_pacman = actual_pacman.resize((40, 40))
@@ -43,13 +43,6 @@ def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
     im = Image.new("RGBA", (50, 50))
     actual_ghost = Image.new("RGBA", (50, 50))
     draw = ImageDraw.Draw(actual_ghost)
-    draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 180, 0, fill=colour)
-    draw.rectangle((0.0, 25.0, 50.0, 40.0), fill=colour)
-
-    for i in (10, 30):
-        draw.ellipse([i, 15, i + 10, 25], fill=(255, 255, 255))
-        draw.ellipse([i + 2, 17, i + 8, 23], fill=(0, 72, 255))
-
     for i in range(1, 4):
         points = [
             (i * (50 / 3) - 50 / 3, 40),
@@ -58,6 +51,14 @@ def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
         ]
         # maths which spits out a triangle
         draw.polygon(points, fill=colour)
+    
+    draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 180, 0, fill=colour)
+    draw.rectangle((0.0, 25.0, 50.0, 40.0), fill=colour)
+
+    for i in (10, 30):
+        draw.ellipse([i, 15, i + 10, 25], fill=(255, 255, 255))
+        draw.ellipse([i + 2, 17, i + 8, 23], fill=(0, 72, 255))
+
     actual_ghost = actual_ghost.resize((45, 45))
     im.paste(actual_ghost, (3, 2))
     return im
@@ -93,8 +94,8 @@ def _scared_ghost(colour: Tuple[int, int, int]) -> Image.Image:
 def _wall() -> Image.Image:
     im = Image.new("RGBA", (50, 50))
     draw = ImageDraw.Draw(im)
-    draw.rectangle(
-        (2.0, 2.0, 48.0, 48.0), outline=(18, 50, 239), width=5, fill=(0, 0, 0)
+    draw.rounded_rectangle(
+        (2.0, 2.0, 48.0, 48.0), outline=(18, 50, 239), width=5, fill=(13, 34, 161), radius=3
     )
     return im
 
@@ -103,9 +104,15 @@ def _wall() -> Image.Image:
 def _coin() -> Image.Image:
     im = Image.new("RGBA", (50, 50), (0, 0, 0))
     draw = ImageDraw.Draw(im)
+    draw.rounded_rectangle(
+        (2.0, 2.0, 48.0, 48.0), fill=(14, 14, 14), radius=5
+    )
+    coin = Image.new("RGBA", (8, 8), (14, 14, 14))
+    draw = ImageDraw.Draw(coin)
+    draw.rounded_rectangle((0, 0, 8, 8), fill=(255, 255, 255), radius=1)
+    coin = coin.rotate(45)
 
-    draw.rectangle((21.0, 21.0, 29.0, 29.0), fill=(255, 255, 255))
-    im = im.rotate(45)
+    im.paste(coin, (21, 21))
 
     return im
 
@@ -113,14 +120,27 @@ def _coin() -> Image.Image:
 @save_asset
 def _blank() -> Image.Image:
     im = Image.new("RGBA", (50, 50), (0, 0, 0))
+    draw = ImageDraw.Draw(im)
+    draw.rounded_rectangle(
+        (2.0, 2.0, 48.0, 48.0), fill=(12, 12, 12), radius=5
+    )
     return im
 
 @save_asset
 def _power_pellet() -> Image.Image:
     im = Image.new("RGBA", (50, 50), (0, 0, 0))
-    draw = ImageDraw.draw(im)
+    draw = ImageDraw.Draw(im)
+    draw.rounded_rectangle(
+        (2.0, 2.0, 48.0, 48.0), fill=(14, 14, 14), radius=5
+    )
+    coin = Image.new("RGBA", (20, 20), (14, 14, 14))
+    draw = ImageDraw.Draw(coin)
+    draw.ellipse([0, 0, 20, 20], fill=(255, 255, 255))
 
-    draw.ellipse([15, 15, 35, 35], fill=(255, 255, 255))
+    im.paste(coin, (10, 10))
+
+    return im
+
 
 
 if __name__ == "__main__":
