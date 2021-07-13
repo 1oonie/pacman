@@ -8,7 +8,7 @@ from sprite import Sprite
 from enums import Tile, Direction
 
 TB = List[List[Tile]]
-PACMAN_SPEED = 2
+PACMAN_SPEED = 3
 
 pygame.font.init()
 font = pygame.font.SysFont("Font.ttf", 24)
@@ -109,8 +109,9 @@ class PacmanSprite(Sprite):
                 continue
             gx, gy = self.app.sprites[sprite].position
             px, py = self.position
-            if (px == gx or px == gx + gx % 2 or px == gx - gx % 2) and (
-                py == gy or py == gy + gy % 2 or py == gy - gy % 2
+            if (
+                gx - 3 < px < gx + 3 and
+                gy -3 < py < gy + 3
             ):
                 # collision detection 👍
                 self.lives -= 1

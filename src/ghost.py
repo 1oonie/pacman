@@ -17,7 +17,7 @@ GHOST_PINK = load("ghost_pink")
 GHOST_ORANGE = load("ghost_orange")
 GHOST_BLUE = load("ghost_blue")
 
-GHOST_SPEED = 1
+GHOST_SPEED = 2
 INVERSES = {
     Direction.RIGHT: Direction.LEFT,
     Direction.LEFT: Direction.RIGHT,
