@@ -1,5 +1,6 @@
 import contextlib
 from typing import Tuple, List
+import time
 
 with contextlib.redirect_stdout(None):
     import pygame
@@ -36,6 +37,8 @@ class PacmanSprite(Sprite):
         self.dead = False
         self.lives = 3
 
+        self.start_time = time.time()
+
         super().__init__(app, app.display, PACMAN_OPEN_RIGHT, (24 * 12, 24 * 12 + 24))
 
     def check_board(
@@ -70,6 +73,8 @@ class PacmanSprite(Sprite):
 
             if check():
                 self.won = True
+                self.score += round((100 - (time.time() - self.start_time)) * 50)
+                self.score += self.lives * 500
 
         return b
 
@@ -86,36 +91,55 @@ class PacmanSprite(Sprite):
     def render(self, img, pos):
         x, y = pos
         super().update(img, (x, y))
+
+        if (time_remaining := 100 - (time.time() - self.start_time)) <= 0:
+            time_remaining = 0
+            self.dead = True
+
+        coins_remaining = len(
+            [
+                item
+                for sublist in self.app.board
+                for item in sublist
+                if item == Tile.COIN
+            ]
+        )
+
         for i in range(self.lives):
-            self.app.display.blit(PACMAN_OPEN_RIGHT, ((576-i*24) - 24, 0))
-        surf = font.render("Score: " + str(self.score), True, (255, 255, 255))
+            self.app.display.blit(PACMAN_OPEN_RIGHT, ((576 - i * 24) - 24, 0))
+
+        surf = font.render(
+            "Score: "
+            + str(self.score)
+            + "    Time: "
+            + str(round(time_remaining))
+            + "    Coins: "
+            + str(coins_remaining),
+            True,
+            (255, 255, 255),
+        )
         self.app.display.blit(surf, (5, 5))
 
     def update(self) -> None:
-        
+
         if self.dead or self.won:
             surf = font.render("Score: " + str(self.score), True, (255, 255, 255))
             self.app.display.blit(surf, (5, 5))
 
-            text = "You win!" if self.won else "You ded!"
+            text = "You won!" if self.won else "You died!"
             colour = (255, 255, 255) if self.won else (255, 0, 0)
             surf = bigfont.render(text, True, colour)
             self.app.display.blit(surf, (185, 200))
             return
-        
 
         for sprite in self.app.sprites:
             if sprite == "pacman":
                 continue
             gx, gy = self.app.sprites[sprite].position
             px, py = self.position
-            if (
-                gx - 3 < px < gx + 3 and
-                gy -3 < py < gy + 3
-            ):
+            if gx - 3 < px < gx + 3 and gy - 3 < py < gy + 3:
                 # collision detection 👍
                 self.lives -= 1
-                self.score -= 500
                 if self.lives <= 0:
                     self.dead = True
                 self.render(PACMAN_OPEN_RIGHT, (24 * 12, 24 * 12 + 24))
@@ -123,7 +147,9 @@ class PacmanSprite(Sprite):
                 for sprite in self.app.sprites:
                     if sprite == "pacman":
                         continue
-                    self.app.sprites[sprite]._position = self.app.sprites[sprite].starting_position
+                    self.app.sprites[sprite]._position = self.app.sprites[
+                        sprite
+                    ].starting_position
 
         x, y = self.position
         y -= 24

@@ -49,7 +49,6 @@ board = open_board()
 app = Application(caption="PacMan", width=576, height=600, icon=PACMAN_OPEN_RIGHT)
 
 
-
 def parse_board(board: str) -> TB:
     tiles_dict = {"-": Tile.WALL, "*": Tile.COIN, " ": Tile.BLANK}
     res = []
@@ -74,6 +73,7 @@ def render_board(board: TB) -> None:
                 # remember, don't "continue" here cause
                 # it speeds up when the is no coin
             app.display.blit(img, (n_item * 24, n_line * 24 + 24))
+
 
 @app.on("start")
 def start(app) -> None:

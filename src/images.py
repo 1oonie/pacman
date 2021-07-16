@@ -51,7 +51,7 @@ def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
         ]
         # maths which spits out a triangle
         draw.polygon(points, fill=colour)
-    
+
     draw.pieslice(((0.0, 0.0), (50.0, 50.0)), 180, 0, fill=colour)
     draw.rectangle((0.0, 25.0, 50.0, 40.0), fill=colour)
 
@@ -62,6 +62,7 @@ def _ghost(colour: Tuple[int, int, int]) -> Image.Image:
     actual_ghost = actual_ghost.resize((45, 45))
     im.paste(actual_ghost, (3, 2))
     return im
+
 
 """
 @save_asset
@@ -95,7 +96,11 @@ def _wall() -> Image.Image:
     im = Image.new("RGBA", (50, 50))
     draw = ImageDraw.Draw(im)
     draw.rounded_rectangle(
-        (2.0, 2.0, 48.0, 48.0), outline=(18, 50, 239), width=5, fill=(13, 34, 161), radius=3
+        (2.0, 2.0, 48.0, 48.0),
+        outline=(18, 50, 239),
+        width=5,
+        fill=(13, 34, 161),
+        radius=3,
     )
     return im
 
@@ -104,9 +109,7 @@ def _wall() -> Image.Image:
 def _coin() -> Image.Image:
     im = Image.new("RGBA", (50, 50), (0, 0, 0))
     draw = ImageDraw.Draw(im)
-    draw.rounded_rectangle(
-        (2.0, 2.0, 48.0, 48.0), fill=(14, 14, 14), radius=5
-    )
+    draw.rounded_rectangle((2.0, 2.0, 48.0, 48.0), fill=(14, 14, 14), radius=5)
     coin = Image.new("RGBA", (8, 8), (14, 14, 14))
     draw = ImageDraw.Draw(coin)
     draw.rounded_rectangle((0, 0, 8, 8), fill=(255, 255, 255), radius=1)
@@ -121,18 +124,15 @@ def _coin() -> Image.Image:
 def _blank() -> Image.Image:
     im = Image.new("RGBA", (50, 50), (0, 0, 0))
     draw = ImageDraw.Draw(im)
-    draw.rounded_rectangle(
-        (2.0, 2.0, 48.0, 48.0), fill=(12, 12, 12), radius=5
-    )
+    draw.rounded_rectangle((2.0, 2.0, 48.0, 48.0), fill=(12, 12, 12), radius=5)
     return im
+
 
 @save_asset
 def _power_pellet() -> Image.Image:
     im = Image.new("RGBA", (50, 50), (0, 0, 0))
     draw = ImageDraw.Draw(im)
-    draw.rounded_rectangle(
-        (2.0, 2.0, 48.0, 48.0), fill=(14, 14, 14), radius=5
-    )
+    draw.rounded_rectangle((2.0, 2.0, 48.0, 48.0), fill=(14, 14, 14), radius=5)
     coin = Image.new("RGBA", (20, 20), (14, 14, 14))
     draw = ImageDraw.Draw(coin)
     draw.ellipse([0, 0, 20, 20], fill=(255, 255, 255))
@@ -140,7 +140,6 @@ def _power_pellet() -> Image.Image:
     im.paste(coin, (15, 15))
 
     return im
-
 
 
 if __name__ == "__main__":
